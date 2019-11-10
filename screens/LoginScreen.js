@@ -14,6 +14,7 @@ class LoginScreen extends React.Component {
     constructor(props) {
       super(props);
       this.state = { rut: '', contraseña: '',};
+      console.log(props);
     }
     static navigationOptions = {
         header: null,
@@ -37,14 +38,12 @@ class LoginScreen extends React.Component {
             alert("Logeado Exitosamente");
             this.props.navigation.navigate('HomeScreen' , {
               rut: this.state.rut,
-              otherParam: '',
             });
           }else{
             alert("Datos Incorrectos");
           }
         })
     }
-
     render() {
     var {navigate} = this.props.navigation;
       return (
@@ -52,19 +51,14 @@ class LoginScreen extends React.Component {
               <Card style={styles.tarjeta}>
               <Card.Content style={styles.contenido} >
                 <Image source={logo} style={styles.logo}></Image>
-  
                 <Title style={styles.titulo}>Bienvenido a TrabünClass</Title>
-  
                 <View style={styles.borderStyle}>
                 <TextInput mode='outlined' style={styles.input} value={this.state.rut} onChangeText={rut => this.setState({rut})} placeholder="Ingresa tu nombre usuario" label="Ingresa tu nombre usuario"/>
-                </View>
-                
+                </View>   
                 <TextInput mode='outlined' style={styles.input} value={this.state.contraseña} onChangeText={contraseña => this.setState({contraseña})} placeholder="Ingresa tu contraseña" label="Ingresa tu contraseña"/>
-  
                 <Button mode='outlined' style={styles.boton} onPress={this.login.bind(this) } >
                         <Text style={styles.texto} >Ingresar</Text>
                 </Button>
-
                 <Paragraph>¿Haz olvidado tu contraseña?</Paragraph>
               </Card.Content>
               </Card>
@@ -72,7 +66,6 @@ class LoginScreen extends React.Component {
       );
     }
   }
-
   export default LoginScreen;
 
   const styles = StyleSheet.create({
@@ -129,4 +122,3 @@ class LoginScreen extends React.Component {
             textAlign: 'center',
       }
   });
-  
