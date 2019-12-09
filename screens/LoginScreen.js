@@ -9,12 +9,13 @@ import {TextInput, Card, Title, Paragraph, Button} from 'react-native-paper'
 import Fondotrabun from '../img/background.png'
 import logo from '../img/logo2.jpg'
 
+import {Dimensions} from 'react-native';
+const {height, width} = Dimensions.get('window')
 
 class LoginScreen extends React.Component {
     constructor(props) {
       super(props);
       this.state = { rut: '', contraseña: '',};
-      console.log(props);
     }
     static navigationOptions = {
         header: null,
@@ -44,6 +45,10 @@ class LoginScreen extends React.Component {
           }
         })
     }
+    registro(){
+      this.props.navigation.navigate('Registro');    
+    }
+
     render() {
     var {navigate} = this.props.navigation;
       return (
@@ -58,6 +63,9 @@ class LoginScreen extends React.Component {
                 <TextInput mode='outlined' style={styles.input} value={this.state.contraseña} onChangeText={contraseña => this.setState({contraseña})} placeholder="Ingresa tu contraseña" label="Ingresa tu contraseña"/>
                 <Button mode='outlined' style={styles.boton} onPress={this.login.bind(this) } >
                         <Text style={styles.texto} >Ingresar</Text>
+                </Button>
+                <Button mode='outlined' style={styles.registrate} onPress={this.registro.bind(this)} >
+                        <Text style={styles.texto} >Registrate</Text>
                 </Button>
                 <Paragraph>¿Haz olvidado tu contraseña?</Paragraph>
               </Card.Content>
@@ -77,10 +85,12 @@ class LoginScreen extends React.Component {
     tarjeta: {
           flex: 0,
           width: 300,
-          height: 500,
+          height: height-100,
           justifyContent: 'center',
           alignItems: 'center',
           borderRadius: 50,
+          marginBottom: 50,
+          marginTop: 50,
     },
     backgroundContainer: {
           flex: 1,
@@ -115,6 +125,12 @@ class LoginScreen extends React.Component {
             marginBottom: 15,
             borderRadius: 25,
             backgroundColor: '#562583',
+      },
+      registrate: {
+          width: 200,
+          marginBottom: 15,
+          borderRadius: 25,
+          backgroundColor: '#94C11F',
       },
       texto: {
             color: 'white',

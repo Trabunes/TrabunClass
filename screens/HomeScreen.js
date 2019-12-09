@@ -1,21 +1,22 @@
 import * as React from 'react';
 import { StyleSheet, ScrollView, View, Text, FlatList, RefreshControl, Dimensions, StatusBar, ImageBackground, Image } from 'react-native'
-import { Card, Title, Paragraph, Button, TextInput, Searchbar, Chip, Avatar } from 'react-native-paper'
+import { Card, Title, Paragraph, Button, TextInput, Chip, Avatar } from 'react-native-paper'
 import { createMaterialBottomTabNavigator} from 'react-navigation-material-bottom-tabs'
-import Carousel from 'react-native-snap-carousel';
 import MapView, {Marker} from 'react-native-maps';
 import StarRating from 'react-native-star-rating';
-import { TabView, SceneMap } from 'react-native-tab-view';
 import Geolocation from '@react-native-community/geolocation';
 
-import Fondotrabun from '../img/background.png'
-import esteban from '../img/esteban.jpg'
+//importacion de los componentes de la aplicacion
+import Perfil from './perfil';
+import Inicio from './inicio';
+import Buscar from './buscar';
+import Agregar from './agregar';
+
 
 
 const {width, height} = Dimensions.get('window')
 
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { asapScheduler } from 'rxjs';
 
 const ASPECT_RATIO = width / height
 const LATTITUDE_DELTA = 0.0922
@@ -28,653 +29,7 @@ class HomeScreen extends React.Component{
                   );
             }
 }
-const FirstRoute = (props) => {
-      contents = props.data.map( (item, i) => {      
-            const { navigation } = props;  
-            console.log(props);
-            return (
-                  <Card style={styles.carta} key={i}>          
-                  <Avatar.Text key={item.id_clase} size={42} label={item.id_clase} style={styles.icon} />
-                     
-                  <Card.Title style={styles.titulo}
-                  title={item.nombre + ' ' +item.apellido} 
-                  subtitle={item.rut}
-                  />
-                  <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-                  <Card.Actions>
-                        <Button mode="contained" style={styles.boton} onPress={ () => navigation.navigate('Agregar', {
-                                                                                      id: item.id_clase,
-                                                                                      rut_clase: item.rut,
-                                                                                      titulo: item.titulo,
-                                                                                      descripcion: item.descripcion,
-                                                                                      costo: item.costo,
-                                                                                      cupo: item.cupo,
-                                                                                      hora_inicio: item.hora_inicio,
-                                                                                      hora_fin: item.hora_fin,
-                                                                                      fecha: item.fecha,
 
-                        })}>Modificar</Button>
-                        <Button mode="contained" key={item.id_clase} onPress={() => props._onDelete(item.id_clase)} style={styles.boton}>Eliminar</Button>
-                        <Button mode="contained" style={styles.boton}>Mapa</Button>
-                  </Card.Actions>
-                  <Card.Content>
-                        <View style={inicio.container}>
-                              <Title style={{textAlign: 'center'}}>{item.titulo}</Title>
-
-                              <Paragraph>{item.descripcion}</Paragraph>
-
-                                    {/* Se crea una nueva vista para alinear los iconos */}
-                                    <View style={inicio.viewIcons}>
-                                    <StarRating
-                                    disabled={false}
-                                    maxStars={5}
-                                    rating={props.starCount}
-                                    selectedStar={(rating) => this.onStarRatingPress(rating)}
-                                    fullStarColor={'#4747d1'}
-                                    />
-                                    </View>
-                                    {/* ----------------------------------------------- */}
-                        </View>
-
-                        <View style={inicio.container}>
-                        <Title style={alignSelf= 'center'}>Cupos</Title>
-                        </View> 
-
-                        {/* Se crea una nueva vista para alinear los iconos */}
-                        <View style={inicio.viewIcons}>
-                        <Icon name="user" color='#4747d1' size={44}/>
-                        <Icon name="user" color='#4747d1' size={44}/>
-                        <Icon name="user" color='#4747d1' size={44}/>
-                        <Icon name="user" color='#4747d1' size={44}/>
-                        <Icon name="user" color='#4747d1' size={44}/>
-                        </View>
-                        {/* ----------------------------------------------- */}
-
-                        <View style={inicio.viewIcons}>
-                              <View style={inicio.container}>
-                                    <Title>Costo</Title>
-                                    <Icon name="money" color='#4747d1' size={44}/>
-                                    <Text size={30}>${item.costo}</Text>
-                              </View>
-
-                              <View style={inicio.container}>
-                                    <Title>Fecha</Title>
-                                    <Icon name="calendar" color='#4747d1' size={44}/>
-                                    <Text>{item.fecha}</Text>
-                                    <Text>{item.hora_inicio}      {item.hora_fin}</Text>
-                              </View>
-                        </View>
-
-                  </Card.Content>
-
-                  </Card>
-            );
-         });
-      return (
-            <View>{contents}</View>
-      );
-}
-
-const SecondRoute = (props) => {
-      contents = props.inscritas.map( (item, i) => {               
-            return (
-                  <Card style={styles.carta} key={i}>          
-                  <Avatar.Text key={item.id_clase} size={42} label={item.id_clase} style={styles.icon} />
-                     
-                  <Card.Title style={styles.titulo}
-                  title={item.nombre + ' ' +item.apellido} 
-                  subtitle={item.rut}
-                  />
-                  <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-                  <Card.Actions>
-                        <Button mode="contained" style={styles.boton} onPress={ () => this.props.navigation.navigate('Agregar', {
-                                                                                      id: item.id_clase,
-                                                                                      rut_clase: item.rut,
-                                                                                      titulo: item.titulo,
-                                                                                      descripcion: item.descripcion,
-                                                                                      costo: item.costo,
-                                                                                      cupo: item.cupo,
-                                                                                      hora_inicio: item.hora_inicio,
-                                                                                      hora_fin: item.hora_fin,
-                                                                                      fecha: item.fecha,
-
-                        })}>Modificar</Button>
-                        <Button mode="contained" key={item.id_clase} onPress={() => this._onDelete(item.id_clase)} style={styles.boton}>Eliminar</Button>
-                        <Button mode="contained" style={styles.boton}>Mapa</Button>
-                  </Card.Actions>
-                  <Card.Content>
-                        <View style={inicio.container}>
-                              <Title style={{textAlign: 'center'}}>{item.titulo}</Title>
-
-                              <Paragraph>{item.descripcion}</Paragraph>
-
-                                    {/* Se crea una nueva vista para alinear los iconos */}
-                                    <View style={inicio.viewIcons}>
-                                    <StarRating
-                                    disabled={false}
-                                    maxStars={5}
-                                    rating={props.starCount}
-                                    selectedStar={(rating) => this.onStarRatingPress(rating)}
-                                    fullStarColor={'#4747d1'}
-                                    />
-                                    </View>
-                                    {/* ----------------------------------------------- */}
-                        </View>
-
-                        <View style={inicio.container}>
-                        <Title style={alignSelf= 'center'}>Cupos</Title>
-                        </View> 
-                        {/* Se crea una nueva vista para alinear los iconos */}
-                        <View style={inicio.viewIcons}>
-                        <Icon name="user" color='#4747d1' size={44}/>
-                        <Icon name="user" color='#4747d1' size={44}/>
-                        <Icon name="user" color='#4747d1' size={44}/>
-                        <Icon name="user" color='#4747d1' size={44}/>
-                        <Icon name="user" color='#4747d1' size={44}/>
-                        </View>
-                        {/* ----------------------------------------------- */}
-
-                        <View style={inicio.viewIcons}>
-                              <View style={inicio.container}>
-                                    <Title>Costo</Title>
-                                    <Icon name="money" color='#4747d1' size={44}/>
-                                    <Text size={30}>${item.costo}</Text>
-                              </View>
-
-                              <View style={inicio.container}>
-                                    <Title>Fecha</Title>
-                                    <Icon name="calendar" color='#4747d1' size={44}/>
-                                    <Text>{item.fecha}</Text>
-                                    <Text>{item.hora_inicio}      {item.hora_fin}</Text>
-                              </View>
-                        </View>
-
-                  </Card.Content>
-
-                  </Card>
-            );
-         });
-      return(
-            <View style={[styles.scene, { backgroundColor: '#9E197E' }]}>
-                  {contents}
-            </View>
-      );
-
-};
-
-class vistaInicio extends React.Component {
-      static navigationOptions = {
-            header: null,
-            };
-            constructor(props) {
-                  super(props)
-                  this._onDelete = this._onDelete.bind(this);
-                  this.state = {
-                        refreshing: false,
-                        data: [],
-                        inscritas: [],
-                        id_clase: [],
-                        rut: '',
-                        starCount: 3.5,
-                        //Necesarias para TabView
-                        index: 0,
-                        routes: [
-                          { key: 'first', title: 'Mis Clases' },
-                          { key: 'second', title: 'Inscritas' },
-                        ]   
-                  };
-                  }
-                  onStarRatingPress(rating) {
-                        this.setState({
-                          starCount: rating
-                        });
-                      }
-                 _onRefresh = () => {
-                  fetch('http://192.168.1.156/backend/backend.php', {
-                        method: 'POST',
-                        headers: {
-                              'Accept': 'application/json',
-                              'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                              rut_usuario_inicio: this.state.rut,
-                              })
-                        })
-                        .then((response) => response.json())                       
-                        .then((res) => {
-                              let data = [];
-                              Object.values(res).forEach(item => {
-                                    data = data.concat(item);
-                              });
-                              this.setState({data: data})
-                              
-                        })  
-                        
-                      }
-                  _onDelete = (e) => {
-                  fetch('http://192.168.1.156/backend/eliminar.php', {
-                        method: 'POST',
-                        headers: {
-                              'Accept': 'application/json',
-                              'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                              id: e,
-                              })
-                        })
-                  }
-                  componentDidMount() {
-                  const { navigation } = this.props;  
-                  const rut = navigation.getParam('rut', this.state.id_clase);
-                  this.misClases(rut);
-                  this.inscritas(rut);
-                  }
-                  misClases(rut){
-                        fetch('http://192.168.1.156/backend/backend.php', {
-                              method: 'POST',
-                              headers: {
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json',
-                              },
-                              body: JSON.stringify({
-                                    rut_usuario_inicio: rut,
-                                    })
-                              })
-                              .then((response) => response.json())                       
-                              .then((res) => {
-                                    let data = [];
-                                    Object.values(res).forEach(item => {
-                                          data = data.concat(item);
-                                    });
-                                    this.setState({data: data})     
-                              })   
-                  }   
-                  inscritas = (rut) => {
-                  fetch('http://192.168.1.156/backend/backend.php', {
-                        method: 'POST',
-                        headers: {
-                              'Accept': 'application/json',
-                              'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                              rut_usuario_inscritos: rut,
-                              })
-                        })
-                        .then((response) => response.json())                       
-                        .then((res) => {
-                              let data = [];
-                              Object.values(res).forEach(item => {
-                                    data = data.concat(item);
-                              });
-                              this.setState({inscritas: data})
-                              
-                        })   
-                  }
-                  mensaje = (numero) => {
-                        return 'numero= '+numero;
-                  }
-                  renderScene = ({ route }) => {
-                        const { navigation } = this.props;  
-                        const rut = navigation.getParam('rut', this.state.id_clase);
-                        switch (route.key) {
-                          case 'first':
-                            return <FirstRoute rut={rut} 
-                                    data={this.state.data} 
-                                    starCount={this.state.starCount}
-                                    mensaje={this.mensaje}
-                                    />;
-                          case 'second':
-                            return <SecondRoute inscritas={this.state.inscritas} />;
-                          default:
-                            return null;
-                        }
-                      };
-      render() {
-            //Ojito Aquí
-            contents = this.state.data.map( (item, i) => {               
-                  return (
-                        <Card style={styles.carta} key={i}>          
-                        <Avatar.Text key={item.id_clase} size={42} label={item.id_clase} style={styles.icon} />
-                           
-                        <Card.Title style={styles.titulo}
-                        title={item.nombre + ' ' +item.apellido} 
-                        subtitle={item.rut}
-                        />
-                        <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-                        <Card.Actions>
-                              <Button mode="contained" style={styles.boton} onPress={ () => this.props.navigation.navigate('Agregar', {
-                                                                                            id: item.id_clase,
-                                                                                            rut_clase: item.rut,
-                                                                                            titulo: item.titulo,
-                                                                                            descripcion: item.descripcion,
-                                                                                            costo: item.costo,
-                                                                                            cupo: item.cupo,
-                                                                                            hora_inicio: item.hora_inicio,
-                                                                                            hora_fin: item.hora_fin,
-                                                                                            fecha: item.fecha,
-
-                              })}>Modificar</Button>
-                              <Button mode="contained" key={item.id_clase} onPress={() => this.props._onDelete(item.id_clase)} style={styles.boton}>Eliminar</Button>
-                              <Button mode="contained" style={styles.boton}>Mapa</Button>
-                        </Card.Actions>
-                        <Card.Content>
-                              <View style={inicio.container}>
-                                    <Title style={{textAlign: 'center'}}>{item.titulo}</Title>
-
-                                    <Paragraph>{item.descripcion}</Paragraph>
-
-                                          {/* Se crea una nueva vista para alinear los iconos */}
-                                          <View style={inicio.viewIcons}>
-                                          <StarRating
-                                          disabled={false}
-                                          maxStars={5}
-                                          rating={this.state.starCount}
-                                          selectedStar={(rating) => this.onStarRatingPress(rating)}
-                                          fullStarColor={'#4747d1'}
-                                          />
-                                          </View>
-                                          {/* ----------------------------------------------- */}
-                              </View>
-
-                              <View style={inicio.container}>
-                              <Title style={alignSelf= 'center'}>Cupos</Title>
-                              </View> 
-
-                              {/* Se crea una nueva vista para alinear los iconos */}
-                              <View style={inicio.viewIcons}>
-                              <Icon name="user" color='#4747d1' size={44}/>
-                              <Icon name="user" color='#4747d1' size={44}/>
-                              <Icon name="user" color='#4747d1' size={44}/>
-                              <Icon name="user" color='#4747d1' size={44}/>
-                              <Icon name="user" color='#4747d1' size={44}/>
-                              </View>
-                              {/* ----------------------------------------------- */}
-
-                              <View style={inicio.viewIcons}>
-                                    <View style={inicio.container}>
-                                          <Title>Costo</Title>
-                                          <Icon name="money" color='#4747d1' size={44}/>
-                                          <Text size={30}>${item.costo}</Text>
-                                    </View>
-
-                                    <View style={inicio.container}>
-                                          <Title>Fecha</Title>
-                                          <Icon name="calendar" color='#4747d1' size={44}/>
-                                          <Text>{item.fecha}</Text>
-                                          <Text>{item.hora_inicio}      {item.hora_fin}</Text>
-                                    </View>
-                              </View>
-
-                        </Card.Content>
-      
-                        </Card>
-                  );
-               });
-            return (
-                  <ScrollView refreshControl={
-                        <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this._onRefresh}
-                      />
-                  } style={styles.container}>
-                  <RefreshControl
-                              refreshing={this.state.refreshing}
-                              onRefresh={this._onRefresh}
-                        />
-                        <TabView
-                        navigationState={this.state}                        
-                        renderScene={this.renderScene}
-                        onIndexChange= {index => this.setState({ index })}
-                        initialLayout={{ width: Dimensions.get('window').width}}
-                        />                              
-              </ScrollView>
-           )
-           
-      }
-}
-
-//Estilos Inicio
-const inicio = StyleSheet.create({
-      viewIcons:{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-      },
-      container: {
-            flex: 1,
-            paddingLeft: 5,
-            alignItems: 'center',
-            justifyContent: 'center',
-      },
-      container: {
-            flex: 1,
-            paddingLeft: 5,
-            alignItems: 'center',
-            justifyContent: 'center',
-      },
-})
-
-const Administrar = (props) => {
-            return(         
-                  <View><Text>asdasd</Text></View>                  
-            );
-}
-//Clase hijo de perfil que sera impreso dentro de una TabView
-const HijoPerfil = (props) => {
-      contents = props.data.map( (item, i) => {               
-            return (
-                 <ImageBackground source={Fondotrabun} style={styles.backgroundContainer}>
-                        <ScrollView>
-                        <Card style={estiloPerfil.carta}>
-                        <Title style={estiloPerfil.titulo}>Información General</Title>
-                                    <Image source={esteban} style={styles.logo}></Image>
-                                    <View style={estiloPerfil.container}>
-                                          <Title style={estiloPerfil.titulo}>{item.nombre} {item.apellido}</Title>
-                                          <Paragraph>{item.rut_usuario}</Paragraph>
-                                          <Text>Area: Mùsica e Informatica</Text>
-                                          <Text>Edad: 25 años</Text>
-                                          <Text>Universidad: Inacap La Serena</Text>
-                                    </View>                  
-                        </Card>
-                        
-                        </ScrollView>
-                  </ImageBackground>
-            );
-         });
-            return(
-                  <View>{contents}</View>
-                  )
-};
-
-const estiloPerfil = StyleSheet.create({
-      carta: {
-            marginTop: 20,
-            flex: 1,
-            borderRadius: 20/2,
-            height: 420,
-            width: 320,   
-      },
-      container: {
-            alignItems: 'center',
-            justifyContent: 'center',
-      },
-      titulo: {
-            textAlign: 'center',
-            marginBottom: 20,
-      },    
-});
-
-class vistaPerfil extends React.Component {
-      constructor() {
-            super()
-            this.state = {
-               refreshing: false,
-               rut: '',
-               nombre: '',
-               apellido: '',
-               data: [],
-
-               index: 0,
-               routes: [
-                     { key: 'general', title: 'General' },
-                     { key: 'administrar', title: 'Administrar'}
-               ],
-            };
-         }
-      probar = () => { 
-            fetch('http://192.168.1.156/backend/agregar.php', {
-                  method: 'POST',
-                  headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    rut: this.state.rut,
-                    nombre: this.state.nombre,
-                    apellido: this.state.apellido,
-                  }),
-            })
-      }
-      _onDelete = (e) => {
-            fetch('http://192.168.1.156/backend/eliminar.php', {
-                  method: 'POST',
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                        rut: e,
-                      })
-                })
-            }
-      _onRefresh = () => {
-                  fetch('http://192.168.1.156/backend/buscar.php')
-                  .then((response) => response.json())
-                  .then((res) => {
-                        this.setState({ data: res,
-                        }); 
-                  });
-                  
-            }
-      componentDidMount() {
-            const { navigation } = this.props;  
-            const rut = navigation.getParam('rut', this.state.id_clase);
-            this.setState({rut: rut})
-             fetch('http://192.168.1.156/backend/buscar.php', {
-                  method: 'POST',
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                        rut_perfil: rut,
-                      })
-             })
-                  .then((response) => response.json())                       
-                  .then((res) => {
-                        this.setState({data: res})
-                  })
-                  .catch((error) => {
-                  console.error(error);
-            });
-            }
-      renderScene = ({route}) => 
-      {
-            console.warn(this.state.rut);
-            switch (route.key) {
-                  case 'general':
-                  return <HijoPerfil rut={this.state.rut} data={this.state.data}/>;
-                  case 'administrar':
-                        return <Administrar inscritas={this.state.inscritas} />;
-                  default:
-                return null;
-            }
-            };
-      render() {
-            return (      
-                  <ScrollView refreshControl={
-                        <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this._onRefresh}/>} style={styles.container}>
-                  <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this._onRefresh}
-                  />
-                  <TabView
-                  navigationState={this.state}
-                  renderScene={this.renderScene}
-                  onIndexChange={index => this.setState({ index })}
-                  initialLayout={{ width: Dimensions.get('window').width }}
-                   />
-                  </ScrollView>
-           );
-      }
-}
-//Estilos tbs
-const tab = StyleSheet.create({
-      scene: {
-        flex: 1,
-      },
-      titulo:{
-            flex: 1,
-            marginLeft: 50,
-            textAlign: 'center',
-            fontWeight: 'bold',
-            height:'100%',
-            width:'100%',
-          },
-});
-//Estilos Perfil
-const perfil = StyleSheet.create({
-                  container: {
-                        flex: 1,
-                        backgroundColor: '#562583',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-              
-                  },
-                  carta: {
-                        borderRadius: 20/2,
-                        marginTop: 5,
-                        marginLeft: 5,
-                        marginRight: 5,
-                        marginBottom: 5,
-                        height: 420,
-                        width: 350,   
-                  },
-                  cartaNombres: {
-                        borderRadius: 20/2,
-                        marginTop: 5,
-                        marginLeft: 5,
-                        marginRight: 5,
-                        marginBottom: 5,
-                        height: 125,
-                        width: 350,   
-                  },
-                  input: {
-                        flex: 0,
-                        height: 50,
-                        width: 240,
-                        justifyContent: 'center',
-                        alignItems: 'stretch',
-                        marginBottom: 25,
-                        borderRadius: 25,
-                  },
-                  boton1: {
-                        marginTop: 5,
-                        marginLeft: 10,
-                        width: 100,
-                        marginBottom: 10,
-                        backgroundColor: '#562583',
-                        borderRadius: 25,
-                      },
-                  boton2: {
-                        marginBottom: 100,
-                        marginLeft: 230,
-                        width: 100,
-                        backgroundColor: '#562583',
-                        borderRadius: 25,
-                      },
-});
 class vistaMapa extends React.Component {
       static navigationOptions = {
             header: null,
@@ -866,85 +221,7 @@ const mapa = StyleSheet.create({
             position: 'absolute'
       },
      });
-class vistaBuscar extends React.Component {
 
-      constructor() {
-            super()
-            this.state = {
-                  data: [],
-                  rut: '',
-                  
-            };
-            }
-
-          componentDidMount() {
-            const { navigation } = this.props;  
-            const rut = navigation.getParam('rut', this.state.rut);
-            this.setState({rut: rut})
-            console.log(rut)
-
-            fetch('http://192.168.1.156/backend/buscar.php', {
-                  method: 'POST',
-                  headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                        rut_buscar: 'asd',
-                        })
-                  })
-                  .then((response) => response.json())                       
-                  .then((res) => {
-                        let data = [];
-                        Object.values(res).forEach(item => {
-                              data = data.concat(item);
-                        });
-                        this.setState({data: data})
-                        
-                  })   
-            }
-
-            _renderItem ({item, i}) {
-                  return (
-                        <Card style={styles.carta2} key={i} onPress={()=>{console.log('onPress');}} >             
-                        <Card.Title title={item.titulo} subtitle={item.rut}/>
-                        <Card.Content>
-                        <Paragraph>{item.descripcion} </Paragraph>
-                        </Card.Content>
-                        </Card>
-                  );
-              }
-      render() {
-            const { firstQuery } = this.state;
-
-            clases = this.state.data.map( (item, i) => {                  
-                  return (
-                        <Carousel layout={'default'} key={i}
-                        ref={(c) => { this._carousel = c; }}
-                        data={this.state.data}
-                        renderItem={this._renderItem}
-                        sliderWidth={360}
-                        itemWidth={320}
-                      />
-
-                  );
-
-               });
-            return (
-                  <View style={styles.view} >
-                  <Searchbar
-                  placeholder="Search"
-                  onChangeText={query => { this.setState({ firstQuery: query }); }}
-                  value={firstQuery}
-                  />
-                  <ScrollView flexDirection='column'>
-                  {clases}
-                  </ScrollView>
-                  </View>
-                  
-           )
-      }
-}
 class vistaAgregar extends React.Component {
       static navigationOptions = {
             header: null,
@@ -1160,15 +437,6 @@ class vistaAgregar extends React.Component {
                         <View style={agregar.container}>
                               <Title alignItems='center'>Agregar Clase</Title>
 
-                              {/* <View style={agregar.container2}>
-                                    <View style={agregar.container}>
-                                          <Title>Rut Usuario</Title>
-                                          <TextInput name='Rut' value={this.state.rut} onChangeText={(rut) => this.setState({rut}) }
-                                          mode='outlined' style={agregar.input} placeholder="19352007-3" label="Ingresa tu Rut"/> 
-                                    </View>
-                              </View> */}
-
-
                               <Title>Título de la Clase</Title>
                               <TextInput name='Titulo' value={this.state.titulo} onChangeText={(titulo) => this.setState({titulo})} 
                                mode='outlined' style={agregar.inputTitulo} placeholder="Clases de ..." label="Ingresa el Título"/>               
@@ -1321,7 +589,7 @@ const agregar = StyleSheet.create({
 //Fin Estilos Agregar
 export default createMaterialBottomTabNavigator({  
       HomeScreen: { screen: HomeScreen},
-      Inicio: { screen: vistaInicio,
+      Inicio: { screen: Inicio,
             navigationOptions:{
                   tabBarLabel: 'Inicio',
                   tabBarIcon: ({tintColor})=>(
@@ -1330,7 +598,7 @@ export default createMaterialBottomTabNavigator({
                   tabBarColor: '#562583',
             }
       },
-      Perfil:  { screen: vistaPerfil,
+      Perfil:  { screen: Perfil,
             navigationOptions:{
                   tabBarLabel: 'Perfil',
                   tabBarIcon: ({tintColor})=>(
@@ -1346,7 +614,7 @@ export default createMaterialBottomTabNavigator({
                   ),
                   tabBarColor: '#562583',
             }},
-      Buscar:  { screen: vistaBuscar,
+      Buscar:  { screen: Buscar,
             navigationOptions:{
                   tabBarLabel: 'Buscar',
                   tabBarIcon: ({tintColor})=>(
@@ -1354,7 +622,7 @@ export default createMaterialBottomTabNavigator({
                   ),
                   tabBarColor: '#773192',
             }},
-      Agregar:  { screen: vistaAgregar,
+      Agregar:  { screen: Agregar,
             navigationOptions:{
                   tabBarIcon: ({tintColor})=>(
                         <Icon style={styles.icon2} name="plus-square" color={tintColor} size={28}/>
@@ -1387,28 +655,6 @@ export default createMaterialBottomTabNavigator({
       flex: 1, flexDirection: 'row', justifyContent: 'flex-end' 
    },
 
-   //
-   backgroundContainer: {
-      flex: 1,
-      width: null,
-      height: null,
-      justifyContent: 'center',
-      alignItems: 'center',
-      },
-
-      logo: {
-            flex: 0,
-            width: 120,
-            height: 120,
-            justifyContent: 'center',
-            alignItems: 'flex-end',
-            borderRadius: 45,
-            left: 100,
-            bottom:10,
-            
-            
-      },
-   //
    para:{
       marginBottom: 500,
    },
