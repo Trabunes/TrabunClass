@@ -2,9 +2,12 @@ import * as React from 'react';
 import { StyleSheet, ScrollView, View, Text, FlatList, RefreshControl, Dimensions, StatusBar, ImageBackground, Image } from 'react-native'
 import { Card, Title, Paragraph} from 'react-native-paper'
 import { TabView } from 'react-native-tab-view';
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 import Fondotrabun from '../img/background.png'
 import esteban from '../img/esteban.jpg'
+const {height, width} = Dimensions.get('window')
+
 
 export default class perfil extends React.Component {
     constructor() {
@@ -74,14 +77,14 @@ export default class perfil extends React.Component {
            })
                 .then((response) => response.json())                       
                 .then((res) => {
-                      this.setState({data: res})
+                      this.setState({data: res,
+                                    res: res[0] })
                 })
                 .catch((error) => {
                 console.error(error);
           });
           }
-    renderScene = ({route}) => 
-    {
+    renderScene = ({route}) => {
           switch (route.key) {
                 case 'general':
                 return <HijoPerfil rut={this.state.rut} data={this.state.data}/>;
@@ -117,24 +120,49 @@ const Administrar = (props) => {
           <View><Text>asdasd</Text></View>                  
     );
 }
+
+mostrarIcono = (tipo) => {
+            if(tipo == 0){
+                  return(
+                        <View style={{justiftyContent:"center", alignItems:"center"}}>
+                              <Icon name="user" color='#4747d1' size={44} />
+                        </View>
+                  );
+            }
+            if(tipo == 1){
+                  return(
+                        <View style={{justiftyContent:"center", alignItems:"center"}}>
+                              <Icon name="graduation-cap" color='#4747d1' size={44}/>
+                        </View>
+                  );
+            }
+            if(tipo == 2){
+                  return(
+                        <View style={{justiftyContent:"center", alignItems:"center"}}>
+                              <Icon name="user-secret" color='#4747d1' size={44}/>
+                        </View>
+                  );
+            }
+      }
+
 //Clase hijo de perfil que sera impreso dentro de una TabView
 const HijoPerfil = (props) => {
-contents = props.data.map( (item, i) => {               
+contents = props.data.map( (item, i) => {
     return (
          <ImageBackground key={i} source={Fondotrabun} style={estiloPerfil.backgroundContainer}>
                 <ScrollView>
                 <Card style={estiloPerfil.carta}>
                 <Title style={estiloPerfil.titulo}>Información General</Title>
                             <Image source={esteban} style={estiloPerfil.logo}></Image>
+                            {this.mostrarIcono(item.tipo)}
                             <View style={estiloPerfil.container}>
                                   <Title style={estiloPerfil.titulo}>{item.nombre} {item.apellido}</Title>
                                   <Paragraph>{item.rut_usuario}</Paragraph>
-                                  <Text>Area: Mùsica e Informatica</Text>
-                                  <Text>Edad: 25 años</Text>
-                                  <Text>Universidad: Inacap La Serena</Text>
+
+                                  <Title style={estiloPerfil.titulo}>Biografía</Title>
+                                  <Paragraph style={{textAlign: 'center'}}>{item.biografia}</Paragraph>
                             </View>                  
                 </Card>
-                
                 </ScrollView>
           </ImageBackground>
     );
@@ -149,7 +177,7 @@ const estiloPerfil = StyleSheet.create({
           marginTop: 20,
           flex: 1,
           borderRadius: 20/2,
-          height: 420,
+          height: height-100,
           width: 320,   
     },
     container: {
@@ -163,7 +191,7 @@ const estiloPerfil = StyleSheet.create({
     backgroundContainer: {
         flex: 1,
         width: null,
-        height: null,
+        height: height,
         justifyContent: 'center',
         alignItems: 'center',
         },
