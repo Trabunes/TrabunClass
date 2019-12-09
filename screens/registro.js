@@ -39,14 +39,6 @@ export default class registro extends React.Component{
             contraseña_usuario: this.state.contraseña_usuario,
           })
         })
-        //   .then((response) => response.json())
-        //   .then((res) => {
-        //     if(res=="Datos Correctos"){
-        //       alert("Registrado Exitosamente");
-        //     }else{
-        //       alert("Datos Incorrectos");
-        //     }
-        //   })
       }
 
       agregarTutor() {
@@ -89,7 +81,7 @@ export default class registro extends React.Component{
                         <TextInput mode='outlined' style={styles.input} value={this.state.nombre_usuario} onChangeText={nombre_usuario => this.setState({nombre_usuario})} placeholder="Nombre" label="Ingresa tu Nombre"/>
                         <TextInput mode='outlined' style={styles.input} value={this.state.apellido_usuario} onChangeText={apellido_usuario => this.setState({apellido_usuario})} placeholder="Apellido" label="Ingresa tu Apellido"/>
                         <TextInput mode='outlined' style={styles.input} value={this.state.contraseña_usuario} onChangeText={contraseña_usuario => this.setState({contraseña_usuario})} placeholder="Contraseña" label="Ingresa tu Contraseña"/>
-                        <Button mode='outlined' style={styles.registrate} onPress={this.agregarUsuario.bind(this)} >
+                        <Button mode='outlined' style={styles.registrate} onPress={this.validarRutUsuario.bind(this)} >
                                 <Text style={styles.texto} >Registrate</Text>
                         </Button>
                     </ScrollView>
@@ -111,8 +103,36 @@ export default class registro extends React.Component{
         }
     }
     
+    validarRutUsuario(){
+      if(this.state.rut_usuario == ''){
+
+          console.log("está vacio");
+          alert("El campo del rut esta vacío");
+
+        }else if (this.state.nombre_usuario == ''){
+
+          console.log ("nombre vacio");
+          alert("El campo del nombre esta vacio");
+
+        } else if (this.state.apellido_usuario == ''){
+
+          alert("El campo del apellido esta vacío"); 
+
+        }else if (this.state.tipo_usuario == ''){
+
+          alert("El campo del tipo esta vacío"); 
+
+        }else if (this.state.contraseña_usuario == ''){
+
+          alert("El campo del contraseña esta vacío"); 
+
+        }else {
+          this.agregarUsuario();
+      }
+    }
+
     render(){
-        console.log(this.state.rut_usuario);
+        // console.log(this.state.rut_usuario);
         return(
             <ImageBackground source={Fondotrabun} style={styles.backgroundContainer}>
             <Card style={styles.tarjeta}>
@@ -135,6 +155,7 @@ export default class registro extends React.Component{
         )
         
     }
+
 }
 
 const styles = StyleSheet.create({
