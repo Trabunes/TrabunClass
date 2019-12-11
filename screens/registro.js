@@ -35,7 +35,7 @@ export default class registro extends React.Component{
             rut_usuario: this.state.rut_usuario,
             nombre_usuario: this.state.nombre_usuario,
             tipo_usuario: this.state.tipo_usuario,
-            apellido_usuario: this.state.nombre_usuario,
+            apellido_usuario: this.state.apellido_usuario,
             contraseña_usuario: this.state.contraseña_usuario,
           })
         })
@@ -52,7 +52,7 @@ export default class registro extends React.Component{
             rut_tutor: this.state.rut_tutor,
             nombre_tutor: this.state.nombre_tutor,
             tipo_tutor: this.state.tipo_tutor,
-            apellido_tutor: this.state.nombre_tutor,
+            apellido_tutor: this.state.apellido_tutor,
             contraseña_tutor: this.state.contraseña_tutor,
           })
         })
@@ -81,7 +81,7 @@ export default class registro extends React.Component{
                         <TextInput mode='outlined' style={styles.input} value={this.state.nombre_usuario} onChangeText={nombre_usuario => this.setState({nombre_usuario})} placeholder="Nombre" label="Ingresa tu Nombre"/>
                         <TextInput mode='outlined' style={styles.input} value={this.state.apellido_usuario} onChangeText={apellido_usuario => this.setState({apellido_usuario})} placeholder="Apellido" label="Ingresa tu Apellido"/>
                         <TextInput mode='outlined' style={styles.input} value={this.state.contraseña_usuario} onChangeText={contraseña_usuario => this.setState({contraseña_usuario})} placeholder="Contraseña" label="Ingresa tu Contraseña"/>
-                        <Button mode='outlined' style={styles.registrate} onPress={this.validarRutUsuario.bind(this)} >
+                        <Button mode='outlined' style={styles.registrate} onPress={this.validarUsuario.bind(this)} >
                                 <Text style={styles.texto} >Registrate</Text>
                         </Button>
                     </ScrollView>
@@ -94,7 +94,7 @@ export default class registro extends React.Component{
                         <TextInput mode='outlined' style={styles.input} value={this.state.nombre_tutor} onChangeText={nombre_tutor => this.setState({nombre_tutor})} placeholder="Nombre" label="Ingresa tu Nombre"/>
                         <TextInput mode='outlined' style={styles.input} value={this.state.apellido_tutor} onChangeText={apellido_tutor => this.setState({apellido_tutor})} placeholder="Apellido" label="Ingresa tu Apellido"/>
                         <TextInput mode='outlined' style={styles.input} value={this.state.contraseña_tutor} onChangeText={contraseña_tutor => this.setState({contraseña_tutor})} placeholder="Contraseña" label="Ingresa tu Contraseña"/>
-                        <Button mode='outlined' style={styles.registrate} onPress={this.agregarTutor.bind(this)}>
+                        <Button mode='outlined' style={styles.registrate} onPress={this.validarTutor.bind(this)}>
                                 <Text style={styles.texto} >Registrate</Text>
                         </Button>
                     </ScrollView>
@@ -103,7 +103,7 @@ export default class registro extends React.Component{
         }
     }
     
-    validarRutUsuario(){
+    validarUsuario(){
       if(this.state.rut_usuario == ''){
 
           console.log("está vacio");
@@ -128,11 +128,56 @@ export default class registro extends React.Component{
 
         }else {
           this.agregarUsuario();
+          alert("Se ha agregado el usuario");
+          this.setState({
+                  rut_usuario: '',
+                  nombre_usuario: '',
+                  apellido_usuario: '',
+                  tipo: null,
+                  contraseña_usuario: '',
+
+          });
+      }
+    }
+
+    validarTutor(){
+      if(this.state.rut_tutor == ''){
+
+          console.log("está vacio");
+          alert("El campo del rut esta vacío");
+
+        }else if (this.state.nombre_tutor == ''){
+
+          console.log ("nombre vacio");
+          alert("El campo del nombre esta vacio");
+
+        } else if (this.state.apellido_tutor == ''){
+
+          alert("El campo del apellido esta vacío"); 
+
+        }else if (this.state.tipo_tutor == ''){
+
+          alert("El campo del tipo esta vacío"); 
+
+        }else if (this.state.contraseña_tutor == ''){
+
+          alert("El campo del contraseña esta vacío"); 
+
+        }else {
+          this.agregarTutor();
+          alert("Se ha agregado el Tutor");
+          this.setState({
+                  rut_tutor: '',
+                  nombre_tutor: '',
+                  apellido_tutor: '',
+                  tipo: null,
+                  contraseña_tutor: '',
+
+          });
       }
     }
 
     render(){
-        // console.log(this.state.rut_usuario);
         return(
             <ImageBackground source={Fondotrabun} style={styles.backgroundContainer}>
             <Card style={styles.tarjeta}>
