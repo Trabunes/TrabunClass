@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, ScrollView, View } from 'react-native'
-import { Card, Paragraph} from 'react-native-paper'
+import { Card, Paragraph,Title} from 'react-native-paper'
 import Carousel from 'react-native-snap-carousel';
 
 export default class buscar extends React.Component {
@@ -69,8 +69,8 @@ export default class buscar extends React.Component {
              });
           return (
                 <View style={estilos_buscar.view} >
-
                 <ScrollView flexDirection='column'>
+                <Title style={estilos_buscar.titulo}>Matematicas</Title>
                 {clases}
                 </ScrollView>
                 </View>
@@ -81,14 +81,20 @@ export default class buscar extends React.Component {
 
 const estilos_buscar = StyleSheet.create({
     carta: {
-        borderRadius: 20/2,
-        marginTop: 5,
-        marginBottom: 5,
-        height: 180,
-        width: 320,
+      borderRadius: 20/2,
+            marginTop: 5,
+            marginBottom: 5,
+            height: 180,
+            width: 320,
       },
       view:{
-        backgroundColor: '#562583',
+            backgroundColor: '#562583',
       },
+      titulo:{
+            paddingTop: 25,
+            color: 'white',
+            paddingLeft: 25,
+            fontSize: 42,
+      }
 })
 

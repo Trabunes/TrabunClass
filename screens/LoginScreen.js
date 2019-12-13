@@ -58,9 +58,9 @@ class LoginScreen extends React.Component {
                 <Image source={logo} style={styles.logo}></Image>
                 <Title style={styles.titulo}>Bienvenido a TrabünClass</Title>
                 <View style={styles.borderStyle}>
-                <TextInput mode='outlined' style={styles.input} value={this.state.rut} onChangeText={rut => this.setState({rut})} placeholder="Ingresa tu nombre usuario" label="Ingresa tu nombre usuario"/>
+                <TextInput mode='outlined' style={styles.input} value={this.state.rut} onChangeText={rut => this.setState({rut})} placeholder="Ingresa tu Rut" label="Ingresa tu Rut"/>
                 </View>   
-                <TextInput mode='outlined' style={styles.input} value={this.state.contraseña} onChangeText={contraseña => this.setState({contraseña})} placeholder="Ingresa tu contraseña" label="Ingresa tu contraseña"/>
+                <TextInput mode='outlined' style={styles.input} secureTextEntry={true} value={this.state.contraseña} onChangeText={contraseña => this.setState({contraseña})} placeholder="Ingresa tu contraseña" label="Ingresa tu contraseña"/>
                 <Button mode='outlined' style={styles.boton} onPress={this.login.bind(this) } >
                         <Text style={styles.texto} >Ingresar</Text>
                 </Button>

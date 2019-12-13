@@ -123,60 +123,8 @@ export default class agregar extends React.Component {
                       })  
                       
           }
-        componentcomponentDidUpdate(){
-                this.setState({sesion: 1})
-                const { navigation } = this.props;  
-                const id = navigation.getParam('id', this.state.id_clase);
-                const rut = navigation.getParam('rut', this.state.rut);
-                const rut_clase = navigation.getParam('rut_clase', this.state.rut_clase);
-                const titulo = navigation.getParam('titulo', this.state.titulo);
-                const descripcion = navigation.getParam('descripcion', this.state.descripcion);
-                const costo = navigation.getParam('costo', this.state.costo);
-                const cupo = navigation.getParam('cupo', this.state.cupo);
-                const hora_inicio = navigation.getParam('hora_inicio', this.state.hora_inicio);
-                const hora_fin = navigation.getParam('hora_fin', this.state.hora_fin);
-                const fecha = navigation.getParam('fecha', this.state.fecha);
-
-
-                this.setState({rut: rut})           
-                this.setState({titulo: titulo})
-                this.setState({descripcion: descripcion})
-                this.setState({costo: costo})
-                this.setState({cupo: cupo})
-                this.setState({hora_inicio: hora_inicio})
-                this.setState({hora_fin: hora_fin})
-                this.setState({fecha: fecha})
-                this.setState({descripcion: descripcion})       
-                console.warn(this.state.data)
-          }
           
         componentDidMount() {
-                const { navigation } = this.props;  
-                const id = navigation.getParam('id', this.state.id_clase);
-                const rut = navigation.getParam('rut', this.state.rut);
-
-                const rut_clase = navigation.getParam('rut_clase', this.state.rut_clase);
-                const titulo = navigation.getParam('titulo', this.state.titulo);
-                const descripcion = navigation.getParam('descripcion', this.state.descripcion);
-                const costo = navigation.getParam('costo', this.state.costo);
-                const cupo = navigation.getParam('cupo', this.state.cupo);
-                const hora_inicio = navigation.getParam('hora_inicio', this.state.hora_inicio);
-                const hora_fin = navigation.getParam('hora_fin', this.state.hora_fin);
-                const fecha = navigation.getParam('fecha', this.state.fecha);
-                
-                this.setState({sesion: 1})
-                this.setState({id_clase: id})
-                this.setState({rut: rut})
-                this.setState({rut_clase: rut_clase})
-                this.setState({titulo: titulo})
-                this.setState({descripcion: descripcion})
-                this.setState({costo: costo})
-                this.setState({cupo: cupo})
-                this.setState({hora_inicio: hora_inicio})
-                this.setState({hora_fin: hora_fin})
-                this.setState({fecha: fecha})
-                this.setState({descripcion: descripcion})
-
                 Geolocation.getCurrentPosition(
                       (position) => {
                             var lat = parseFloat(position.coords.latitude)
@@ -217,7 +165,7 @@ export default class agregar extends React.Component {
                 
     render() {
           return (            
-                <ScrollView flexDirection='column' style={agregar.scroll}>
+                <ScrollView flexDirection='column' style={estilos_agregar.scroll}>
                 <Card style={estilos_agregar.carta} >             
                       <Card.Content>
                       <View style={estilos_agregar.container}>
@@ -248,10 +196,7 @@ export default class agregar extends React.Component {
                                   </View>
                             </View>
                             
-                            <Title>Cupos</Title>
-                            {/* <Icon name="users" color='#4747d1' size={44}/>
-                            <TextInput name='Cupo' value={this.state.cupo} onChangeText={(cupo) => this.setState({cupo})} 
-                             mode='outlined' style={agregar.input} placeholder="Ingresa el Cupo" label="Ingresa el Cupo" keyboardType={'numeric'}/> */}             
+                            <Title>Cupos</Title>         
                              <View style={estilos_agregar.container2}>
                              <StarRating
                                   starStyle={estilos_agregar.cupo}
@@ -288,9 +233,9 @@ export default class agregar extends React.Component {
                             
                       </View>
                       </Card.Content>
-                      <Card.Actions>
+                      <Card.Actions style={{justifyContent: 'center'}}>
                             <Button mode="contained" style={estilos_agregar.boton} onPress={this.agregar}>Agregar</Button>
-                            <Button mode="contained" style={estilos_agregar.boton} onPress={this._onUpdate}>Modificar</Button>
+                            <Button mode="contained" style={estilos_agregar.boton2} onPress={this._onUpdate}>Modificar</Button>
                       </Card.Actions>
                 </Card>
                 </ScrollView>
@@ -311,13 +256,12 @@ const estilos_agregar = StyleSheet.create({
 
     },
     carta: {
-          borderRadius: 20/2,
-          marginTop: 10,
-          marginLeft: 5,
-          marginRight: 5,
-          marginBottom: 15,
-          height: 1000,
-          width: 350,   
+            borderRadius: 50/2,
+            marginTop: 15,
+            marginLeft: 10,
+            marginRight: 10,
+            marginBottom: 15,
+      //     height: 1000,
           alignItems: 'center',
     },
     scroll: {
@@ -354,13 +298,12 @@ const estilos_agregar = StyleSheet.create({
           marginTop: 5,
           width: 140,
           marginLeft: 10,
-          backgroundColor: '#562583',
+          backgroundColor: '#94C11F',
           borderRadius: 25,
           alignItems: 'center',
         },
         boton2: {
           marginTop: 5,
-          marginBottom: 15,
           width: 140,
           marginLeft: 10,
           backgroundColor: '#562583',
