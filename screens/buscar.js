@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { StyleSheet, ScrollView, View } from 'react-native'
-import { Card, Paragraph,Title} from 'react-native-paper'
+import { StyleSheet, ScrollView, View, Dimensions, Text } from 'react-native'
+import { Card, Paragraph,Title, ActivityIndicator} from 'react-native-paper'
 import Carousel from 'react-native-snap-carousel';
+const {height, width} = Dimensions.get('window')
+
 
 export default class buscar extends React.Component {
     constructor() {
@@ -9,6 +11,7 @@ export default class buscar extends React.Component {
           this.state = {
                 data: [],
                 rut: '',
+                categoria: [],
                 
           };
         }
@@ -36,46 +39,75 @@ export default class buscar extends React.Component {
                       });
                       this.setState({data: data})
                       
-                })   
+                })
+            this.getCategorias()
           }
 
+          getCategorias(){
+            fetch('http://192.168.1.156/backend/buscar.php', {
+                  method: 'POST',
+                  headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                        categoria: 'asd',
+                        })
+                  })
+                  .then((response) => response.json())                       
+                  .then((res) => {
+                        let data = [];
+                        Object.values(res).forEach(item => {
+                              data = data.concat(item);
+                        });
+                        this.setState({categoria: data})
+                        
+                  })
+          }
           _renderItem ({item, i}) {
-                return (
-                      <Card style={estilos_buscar.carta} key={i} onPress={()=>{console.log('onPress');}} >             
+                  return (
+                      <Card style={estilos_buscar.carta} onPress={()=>{console.log('onPress');}} >             
                       <Card.Title title={item.titulo} subtitle={item.rut}/>
                       <Card.Content>
                       <Paragraph>{item.descripcion} </Paragraph>
                       </Card.Content>
                       </Card>
-                );
+                  );                
             }
-
             
     render() {
-          const { firstQuery } = this.state;
+            console.log(this.state.data);
+            const { firstQuery } = this.state;
 
-          clases = this.state.data.map( (item, i) => {                  
-                return (
-                      <Carousel layout={'default'} key={i}
-                      ref={(c) => { this._carousel = c; }}
-                      data={this.state.data}
-                      renderItem={this._renderItem}
-                      sliderWidth={360}
-                      itemWidth={320}
-                    />
+            contents = this.state.categoria.map ( (item, i, x, z) => {
+                  return(
+                        <View key={i}>
+                        <Title style={estilos_buscar.titulo} key={x}>{item.nombre_categoria}</Title>
+                        <Carousel layout={'default'} key={z}
+                        ref={(c) => { this._carousel = c; }}
+                        data={this.state.data}
+                        renderItem={this._renderItem}
+                        sliderWidth={360}
+                        itemWidth={320}/>
+                        </View>
+                  )
+            })
 
-                );
+            return (
+                  <ScrollView style={estilos_buscar.view} flexDirection='column'>
+                  {contents}
 
-             });
-          return (
-                <View style={estilos_buscar.view} >
-                <ScrollView flexDirection='column'>
-                <Title style={estilos_buscar.titulo}>Matematicas</Title>
-                {clases}
-                </ScrollView>
-                </View>
-                
-         )
+                  {/* <Title style={estilos_buscar.titulo}>{this.state.categoria != '' ? 'Titulo' : 'Cargando'}</Title> */}
+                  {/* <View style={estilos_buscar.view}>
+                  <Carousel layout={'default'} 
+                  ref={(c) => { this._carousel = c; }}re
+                  data={this.state.data}
+                  renderItem={this._renderItem}
+                  sliderWidth={360}
+                  itemWidth={320}/>
+                  </View> */}
+                  </ScrollView>
+            );   
     }
 }
 
@@ -89,6 +121,7 @@ const estilos_buscar = StyleSheet.create({
       },
       view:{
             backgroundColor: '#562583',
+            height: height,
       },
       titulo:{
             paddingTop: 25,

@@ -4,6 +4,7 @@ import { StyleSheet, ScrollView, View, Text, RefreshControl, Dimensions} from 'r
 import { TabView, SceneMap } from 'react-native-tab-view';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/FontAwesome'
+const {height, width} = Dimensions.get('window')
 
 
 export default class inicio extends React.Component {
@@ -158,84 +159,92 @@ export default class inicio extends React.Component {
 }
 
 const FirstRoute = (props) => {
-    contents = props.data.map( (item, i) => {      
-          const { navigation } = props;  
-          console.log(props);
-          return (
-                <Card style={styles.carta} key={i}>          
-                <Avatar.Text key={item.id_clase} size={42} label={item.id_clase} style={styles.icon} />
-                   
-                <Card.Title style={styles.titulo}
-                title={item.nombre + ' ' +item.apellido} 
-                subtitle={item.rut}
-                />
-                {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
-                <Card.Content>
-                      <View style={estilo_inicio.container}>
-                            <Title style={{textAlign: 'center'}}>{item.titulo}</Title>
+      if(props.data == ''){
+            return(
+                  <View style={{height: height}}>
+                  <Text>Inscribite a una Clase</Text>
+                  </View>
+            )
+      }else{
+            contents = props.data.map( (item, i) => {      
+                  const { navigation } = props;                    
+                  return (
+                        <Card style={styles.carta} key={i}>          
+                        <Avatar.Text key={item.id_clase} size={42} label={item.id_clase} style={styles.icon} />
+                           
+                        <Card.Title style={styles.titulo}
+                        title={item.nombre + ' ' +item.apellido} 
+                        subtitle={item.rut}
+                        />
+                        {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
+                        <Card.Content>
+                              <View style={estilo_inicio.container}>
+                                    <Title style={{textAlign: 'center'}}>{item.titulo}</Title>
+        
+                                    <Paragraph>{item.descripcion}</Paragraph>
+                                          {/* Se crea una nueva vista para alinear los iconos */}
+                                          {/* <View style={inicio.viewIcons}>
+                                          <StarRating
+                                          disabled={false}
+                                          maxStars={5}
+                                          rating={props.starCount}
+                                          selectedStar={(rating) => this.onStarRatingPress(rating)}
+                                          fullStarColor={'#4747d1'}
+                                          />
+                                          </View> */}
+                                          {/* ----------------------------------------------- */}
+                              </View>
+        
+                              <View style={estilo_inicio.container}>
+                              <Title style={alignSelf= 'center'}>Cupos</Title>
+                              </View> 
+        
+                              {/* Se crea una nueva vista para alinear los iconos */}
+                              <View style={estilo_inicio.viewIcons}>
+                              <Icon name="user" color='#4747d1' size={44}/>
+                              <Icon name="user" color='#4747d1' size={44}/>
+                              <Icon name="user" color='#4747d1' size={44}/>
+                              <Icon name="user" color='#4747d1' size={44}/>
+                              <Icon name="user" color='#4747d1' size={44}/>
+                              </View>
+                              {/* ----------------------------------------------- */}
+        
+                              <View style={estilo_inicio.viewIcons}>
+                                    <View style={estilo_inicio.container}>
+                                          <Title>Costo</Title>
+                                          <Icon name="money" color='#4747d1' size={44}/>
+                                          <Text size={30}>${item.costo}</Text>
+                                    </View>
+        
+                                    <View style={estilo_inicio.container}>
+                                          <Title>Fecha</Title>
+                                          <Icon name="calendar" color='#4747d1' size={44}/>
+                                          <Text>{item.fecha}</Text>
+                                          <Text>{item.hora_inicio}      {item.hora_fin}</Text>
+                                    </View>
+                              </View>
+                        </Card.Content>
+                        <Card.Actions style={{justifyContent: 'center'}}>
+                              <Button mode="contained" style={styles.boton} onPress={ () => navigation.navigate('Agregar', {
+                                                                                            id: item.id_clase,
+                                                                                            rut_clase: item.rut,
+                                                                                            titulo: item.titulo,
+                                                                                            descripcion: item.descripcion,
+                                                                                            costo: item.costo,
+                                                                                            cupo: item.cupo,
+                                                                                            hora_inicio: item.hora_inicio,
+                                                                                            hora_fin: item.hora_fin,
+                                                                                            fecha: item.fecha,
+        
+                              })}>Modificar</Button>
+                              <Button mode="contained" key={item.id_clase} onPress={() => props._onDelete(item.id_clase)} style={styles.boton}>Eliminar</Button>
+                              {/* <Button mode="contained" style={styles.boton}>Mapa</Button> */}
+                        </Card.Actions>
+                        </Card>
+                  );
+               });
+      }
 
-                            <Paragraph>{item.descripcion}</Paragraph>
-                                  {/* Se crea una nueva vista para alinear los iconos */}
-                                  {/* <View style={inicio.viewIcons}>
-                                  <StarRating
-                                  disabled={false}
-                                  maxStars={5}
-                                  rating={props.starCount}
-                                  selectedStar={(rating) => this.onStarRatingPress(rating)}
-                                  fullStarColor={'#4747d1'}
-                                  />
-                                  </View> */}
-                                  {/* ----------------------------------------------- */}
-                      </View>
-
-                      <View style={estilo_inicio.container}>
-                      <Title style={alignSelf= 'center'}>Cupos</Title>
-                      </View> 
-
-                      {/* Se crea una nueva vista para alinear los iconos */}
-                      <View style={estilo_inicio.viewIcons}>
-                      <Icon name="user" color='#4747d1' size={44}/>
-                      <Icon name="user" color='#4747d1' size={44}/>
-                      <Icon name="user" color='#4747d1' size={44}/>
-                      <Icon name="user" color='#4747d1' size={44}/>
-                      <Icon name="user" color='#4747d1' size={44}/>
-                      </View>
-                      {/* ----------------------------------------------- */}
-
-                      <View style={estilo_inicio.viewIcons}>
-                            <View style={estilo_inicio.container}>
-                                  <Title>Costo</Title>
-                                  <Icon name="money" color='#4747d1' size={44}/>
-                                  <Text size={30}>${item.costo}</Text>
-                            </View>
-
-                            <View style={estilo_inicio.container}>
-                                  <Title>Fecha</Title>
-                                  <Icon name="calendar" color='#4747d1' size={44}/>
-                                  <Text>{item.fecha}</Text>
-                                  <Text>{item.hora_inicio}      {item.hora_fin}</Text>
-                            </View>
-                      </View>
-                </Card.Content>
-                <Card.Actions style={{justifyContent: 'center'}}>
-                      <Button mode="contained" style={styles.boton} onPress={ () => navigation.navigate('Agregar', {
-                                                                                    id: item.id_clase,
-                                                                                    rut_clase: item.rut,
-                                                                                    titulo: item.titulo,
-                                                                                    descripcion: item.descripcion,
-                                                                                    costo: item.costo,
-                                                                                    cupo: item.cupo,
-                                                                                    hora_inicio: item.hora_inicio,
-                                                                                    hora_fin: item.hora_fin,
-                                                                                    fecha: item.fecha,
-
-                      })}>Modificar</Button>
-                      <Button mode="contained" key={item.id_clase} onPress={() => props._onDelete(item.id_clase)} style={styles.boton}>Eliminar</Button>
-                      {/* <Button mode="contained" style={styles.boton}>Mapa</Button> */}
-                </Card.Actions>
-                </Card>
-          );
-       });
     return (
           <View>{contents}</View>
     );

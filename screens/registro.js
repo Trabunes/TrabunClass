@@ -15,6 +15,7 @@ export default class registro extends React.Component{
             nombre_usuario: '',
             apellido_usuario: '',
             contraseña_usuario: '',
+            categoria: [],
             rut_tutor: '',
             nombre_tutor: '',
             apellido_tutor: '',
