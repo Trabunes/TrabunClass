@@ -12,6 +12,11 @@ export default class buscar extends React.Component {
                 data: [],
                 rut: '',
                 categoria: [],
+                matematicas: [],
+                deportes: [],
+                tecnologia: [],
+                arte: [],
+                prueba: [['asd'],['asd']],
                 
           };
         }
@@ -41,6 +46,10 @@ export default class buscar extends React.Component {
                       
                 })
             this.getCategorias()
+            this.get(1).then(data => this.setState({matematicas: data}))
+            this.get(2).then(data => this.setState({deportes: data}))
+            this.get(3).then(data => this.setState({tecnologia: data}))
+            this.get(4).then(data => this.setState({arte: data}))
           }
 
           getCategorias(){
@@ -61,9 +70,32 @@ export default class buscar extends React.Component {
                               data = data.concat(item);
                         });
                         this.setState({categoria: data})
-                        
+
+                  })
+            
+          }
+
+          get(id_categoria){
+            return fetch('http://192.168.1.156/backend/buscar.php', {
+                  method: 'POST',
+                  headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                        id_categoria: id_categoria,
+                        })
+                  })
+                  .then((response) => response.json())                       
+                  .then((res) => {
+                        let data = [];
+                        Object.values(res).forEach(item => {
+                              data = data.concat(item);
+                        });
+                        return data;       
                   })
           }
+
           _renderItem ({item, i}) {
                   return (
                       <Card style={estilos_buscar.carta} onPress={()=>{console.log('onPress');}} >             
@@ -74,39 +106,51 @@ export default class buscar extends React.Component {
                       </Card>
                   );                
             }
-            
-    render() {
-            console.log(this.state.data);
-            const { firstQuery } = this.state;
+       
 
-            contents = this.state.categoria.map ( (item, i, x, z) => {
-                  return(
-                        <View key={i}>
-                        <Title style={estilos_buscar.titulo} key={x}>{item.nombre_categoria}</Title>
-                        <Carousel layout={'default'} key={z}
-                        ref={(c) => { this._carousel = c; }}
-                        data={this.state.data}
-                        renderItem={this._renderItem}
-                        sliderWidth={360}
-                        itemWidth={320}/>
-                        </View>
-                  )
-            })
-
+      render() {
+            console.log(this.state.categoria)
             return (
                   <ScrollView style={estilos_buscar.view} flexDirection='column'>
-                  {contents}
+                  <Title style={estilos_buscar.titulo}>{this.state.categoria != '' ? 'Matematicas' : 'Cargando'}</Title>
+                  <Carousel layout={'default'}
+                        ref={(c) => { this._carousel = c; }}
+                        data={this.state.matematicas}
+                        renderItem={this._renderItem}
+                        sliderWidth={360}
+                        itemWidth={320}
+                        />
+                  
+                  <Title style={estilos_buscar.titulo}>{this.state.categoria != '' ? 'Deportes' : 'Cargando'}</Title>
+                  <Carousel layout={'default'}
+                        ref={(c) => { this._carousel = c; }}
+                        data={this.state.deportes}
+                        renderItem={this._renderItem}
+                        sliderWidth={360}
+                        itemWidth={320}
+                        />
+                  
+                  <Title style={estilos_buscar.titulo}>{this.state.categoria != '' ? 'Tecnología' : 'Cargando'}</Title>
+                  <Carousel layout={'default'}
+                        ref={(c) => { this._carousel = c; }}
+                        data={this.state.tecnologia}
+                        renderItem={this._renderItem}
+                        sliderWidth={360}
+                        itemWidth={320}
+                        />
+                  
+                  <Title style={estilos_buscar.titulo}>{this.state.categoria != '' ? 'Arte' : 'Cargando'}</Title>
+                  <Carousel layout={'default'}
+                        ref={(c) => { this._carousel = c; }}
+                        data={this.state.arte}
+                        renderItem={this._renderItem}
+                        sliderWidth={360}
+                        itemWidth={320}
+                        />
 
-                  {/* <Title style={estilos_buscar.titulo}>{this.state.categoria != '' ? 'Titulo' : 'Cargando'}</Title> */}
-                  {/* <View style={estilos_buscar.view}>
-                  <Carousel layout={'default'} 
-                  ref={(c) => { this._carousel = c; }}re
-                  data={this.state.data}
-                  renderItem={this._renderItem}
-                  sliderWidth={360}
-                  itemWidth={320}/>
-                  </View> */}
                   </ScrollView>
+
+                  
             );   
     }
 }

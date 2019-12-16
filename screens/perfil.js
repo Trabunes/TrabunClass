@@ -153,7 +153,7 @@ contents = props.data.map( (item, i) => {
                 <ScrollView>
                 <Card style={estiloPerfil.carta}>
                 <Title style={estiloPerfil.titulo}>Información General</Title>
-                            <Image source={esteban} style={estiloPerfil.logo}></Image>
+                            {/* <Image source={esteban} style={estiloPerfil.logo}></Image> */}
                             {this.mostrarIcono(item.tipo)}
                             <View style={estiloPerfil.container}>
                                   <Title style={estiloPerfil.titulo}>{item.nombre} {item.apellido}</Title>

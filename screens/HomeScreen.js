@@ -606,14 +606,14 @@ export default createMaterialBottomTabNavigator({
                   ),
                   tabBarColor: '#773192',
             }},
-      Mapa:  { screen: vistaMapa,
-            navigationOptions:{
-                  tabBarLabel: 'Mapa',
-                  tabBarIcon: ({tintColor})=>(
-                        <Icon name="map-marker" color={tintColor} size={24}/>
-                  ),
-                  tabBarColor: '#562583',
-            }},
+      // Mapa:  { screen: vistaMapa,
+      //       navigationOptions:{
+      //             tabBarLabel: 'Mapa',
+      //             tabBarIcon: ({tintColor})=>(
+      //                   <Icon name="map-marker" color={tintColor} size={24}/>
+      //             ),
+      //             tabBarColor: '#562583',
+      //       }},
       Buscar:  { screen: Buscar,
             navigationOptions:{
                   tabBarLabel: 'Buscar',
@@ -632,7 +632,7 @@ export default createMaterialBottomTabNavigator({
 
             },{
             initialRouteName: 'Inicio', 
-            order: ['Inicio', 'Buscar', 'Agregar','Mapa' ,'Perfil'],
+            order: ['Inicio', 'Buscar', 'Agregar','Perfil'],
             activeTintColor: '#000000',
             barStyle: { backgroundColor: '#9E197E' },
 })

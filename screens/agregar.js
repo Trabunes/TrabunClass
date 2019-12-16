@@ -159,9 +159,6 @@ export default class agregar extends React.Component {
                 this.setState({longitud: this.state.initialPosition.longitude})
                 this.setState({latitud: this.state.initialPosition.latitude})
                 }
-        componentWillUnmount(){
-                this.setState({sesion: 0})
-            }
                 
     render() {
           return (            
