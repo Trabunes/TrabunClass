@@ -43,7 +43,7 @@ export default class registro extends React.Component{
       }
 
       agregarTutor() {
-        fetch('http://192.168.1.156/backend/agregar.php', {
+        fetch('http://10.12.49.113/backend/agregar.php', {
           method: 'POST',
           header:{
             'Accept': 'application/json',
