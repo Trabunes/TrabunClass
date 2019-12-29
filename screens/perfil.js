@@ -18,6 +18,7 @@ export default class perfil extends React.Component {
              nombre: '',
              apellido: '',
              data: [],
+             inscritas: [],
 
              index: 0,
              routes: [
@@ -64,6 +65,7 @@ export default class perfil extends React.Component {
     componentDidMount() {
           const { navigation } = this.props;  
           const rut = navigation.getParam('rut', this.state.id_clase);
+          this.inscritas(rut);
           this.setState({rut: rut})
            fetch('http://192.168.1.156/backend/buscar.php', {
                 method: 'POST',
@@ -84,10 +86,37 @@ export default class perfil extends React.Component {
                 console.error(error);
           });
           }
+
+          inscritas = (rut) => {
+            fetch('http://192.168.1.156/backend/backend.php', {
+                  method: 'POST',
+                  headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                        rut_usuario_inscritos: rut,
+                        })
+                  })
+                  .then((response) => response.json())                       
+                  .then((res) => {
+                        let data = [];
+                        Object.values(res).forEach(item => {
+                              data = data.concat(item);
+                        });
+                        this.setState({inscritas: data})
+                        
+                  })   
+            }
+            renderInscritas(){
+                   this.state.inscritas.map((item) => <Text>{item.titulo}</Text>)
+            }
+
+
     renderScene = ({route}) => {
           switch (route.key) {
                 case 'general':
-                return <HijoPerfil rut={this.state.rut} data={this.state.data}/>;
+                return <HijoPerfil inscritas={this.renderInscritas} rut={this.state.rut} data={this.state.data}/>;
                 case 'administrar':
                       return <Administrar inscritas={this.state.inscritas} />;
                 default:
@@ -121,6 +150,7 @@ const Administrar = (props) => {
     );
 }
 
+
 mostrarIcono = (tipo) => {
             if(tipo == 0){
                   return(
@@ -145,9 +175,37 @@ mostrarIcono = (tipo) => {
             }
       }
 
+      inscritas = (rut) => {
+            
+            fetch('http://192.168.1.156/backend/backend.php', {
+                  method: 'POST',
+                  headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                        rut_usuario_inscritos: rut,
+                        })
+                  })
+                  .then((response) => response.json())                       
+                  .then((res) => {
+                        let data = [];
+                        Object.values(res).forEach(item => {
+                              data = data.concat(item);
+                        });
+                  console.log(data);
+
+                  data.map((item => 
+                        <View>
+                              <Text>{item.titulo}</Text>
+                        </View>
+                        ))
+                  })   
+            }
 //Clase hijo de perfil que sera impreso dentro de una TabView
 const HijoPerfil = (props) => {
 contents = props.data.map( (item, i) => {
+      console.warn(props.data);
     return (
          <ImageBackground key={i} source={Fondotrabun} style={estiloPerfil.backgroundContainer}>
                 <ScrollView>
@@ -161,10 +219,12 @@ contents = props.data.map( (item, i) => {
 
                                   <Title style={estiloPerfil.titulo}>Biografía</Title>
                                   <Paragraph style={{textAlign: 'center'}}>{item.biografia}</Paragraph>
+                              {this.inscritas(item.rut_usuario)}
                             </View>                  
                 </Card>
                 </ScrollView>
           </ImageBackground>
+
     );
  });
     return(

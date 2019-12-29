@@ -467,8 +467,8 @@ class vistaAgregar extends React.Component {
 
                                           <Title>Cupos</Title>
                                           {/* <Icon name="users" color='#4747d1' size={44}/>
-                              <TextInput name='Cupo' value={this.state.cupo} onChangeText={(cupo) => this.setState({cupo})} 
-                               mode='outlined' style={agregar.input} placeholder="Ingresa el Cupo" label="Ingresa el Cupo" keyboardType={'numeric'}/> */}
+                                          <TextInput name='Cupo' value={this.state.cupo} onChangeText={(cupo) => this.setState({cupo})} 
+                                          mode='outlined' style={agregar.input} placeholder="Ingresa el Cupo" label="Ingresa el Cupo" keyboardType={'numeric'}/> */}
                                           <View style={agregar.container2}>
                                                 <StarRating
                                                       starStyle={agregar.cupo}

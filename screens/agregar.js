@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, ScrollView, View, Dimensions, Platform } from 'react-native'
+import { StyleSheet, ScrollView, View, Dimensions, Platform, Picker, Text } from 'react-native'
 import { Card, Title, Paragraph, Button, TextInput, Chip, Avatar } from 'react-native-paper'
 import StarRating from 'react-native-star-rating';
 import Geolocation from '@react-native-community/geolocation';
@@ -28,6 +28,8 @@ export default class agregar extends React.Component {
                   rut: '',
                   rut_clase: '',
                   titulo: '',
+                  categorias: [],
+                  categoria: '',
                   descripcion: '',
                   costo: '',
                   cupo: 3,
@@ -35,7 +37,7 @@ export default class agregar extends React.Component {
                   hora_fin: '',
                   fecha: '',
 
-                  date: new Date('2020-06-12T14:42:42'),
+                  date: new Date(),
                   mode: 'date',
                   show: false,
             };
@@ -45,6 +47,30 @@ export default class agregar extends React.Component {
                   cupo: rating
             });
       }
+
+      getCategorias() {
+            fetch('http://192.168.1.156/backend/buscar.php', {
+                  method: 'POST',
+                  headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                        nombre_categoria: 'nombre_categoria',
+                  })
+            })
+                  .then((response) => response.json())
+                  .then((res) => {
+                        let data = [];
+                        Object.values(res).forEach(item => {
+                              data = data.concat(item);
+                        });
+                        this.setState({ categoria: data })
+
+                  })
+
+      }
+
       agregar = () => {
             fetch('http://192.168.1.156/backend/agregar.php', {
                   method: 'POST',
@@ -122,17 +148,17 @@ export default class agregar extends React.Component {
       }
 
       componentDidMount() {
-
+            this.getCategorias();
       }
 
       setDate = (event, date) => {
             date = date || this.state.date;
-        
+
             this.setState({
-              show: Platform.OS === 'ios' ? true : false,
-              date,
+                  show: Platform.OS === 'ios' ? true : false,
+                  date,
             });
-          }
+      }
 
       show = mode => {
             this.setState({
@@ -165,9 +191,26 @@ export default class agregar extends React.Component {
             this.setState({ isVisible: false })
       }
 
+      renderPicker() {
+            if (this.state.categoria != '') {
+                  this.state.categoria.map((item, i) => {
+                        return (
+                              <View>
+                              <Picker.Item key={i} label={item.nombre_categoria} value={item.nombre_categoria} />
+                              </View>
+                        )
+                  })
+            }else{
+                  return(
+                        <View>
+                              <Picker.Item label="Cargando categorías..." value='NA' />
+                        </View>
+                  )
+            }
+      }
       render() {
-            const { show, date, mode } = this.state;
 
+            const { show, date, mode } = this.state;
             return (
                   <ScrollView flexDirection='column' style={estilos_agregar.scroll}>
                         <Card style={estilos_agregar.carta} >
@@ -179,10 +222,49 @@ export default class agregar extends React.Component {
                                           <TextInput name='Titulo' value={this.state.titulo} onChangeText={(titulo) => this.setState({ titulo })}
                                                 mode='outlined' style={estilos_agregar.inputTitulo} placeholder="Clases de ..." label="Ingresa el Título" />
 
+                                          <Title>Categoría de la Clase</Title>
+                                          <Picker
+                                          selectedValue={this.state.categoria}
+                                          style={{height: 50, width: 180}}
+                                          onValueChange={(itemValue, itemIndex) =>
+                                          this.setState({categoria: itemValue})
+                                          }>
+                                          <Picker.Item label="Matematicas" value="Matematicas" />
+                                          <Picker.Item label="Deportes" value="Deportes" />
+                                          <Picker.Item label="Tecnología" value="Tecnología" />
+                                          <Picker.Item label="Arte" value="Arte" />
+                                          </Picker>
+
+                                          {/* <Picker
+                                          selectedValue={this.state.categoria}
+                                          style={{height: 50, width: 100}}
+                                          onValueChange={(itemValue, itemIndex) =>
+                                          this.setState({categoria: itemValue})
+                                          }>
+ 
+                                          <Picker.Item label="Java" value="java" />
+                                          <Picker.Item label="JavaScript" value="js" />
+                                          </Picker> */}
+
                                           <Title>Descripción</Title>
-                                          <TextInput name='Descripcion' value={this.state.descripcion} onChangeText={(descripcion) => this.setState({ descripcion })}
+                                          <TextInput name='Descripcion' multiline={true} value={this.state.descripcion} onChangeText={(descripcion) => this.setState({ descripcion })}
                                                 mode='outlined' style={estilos_agregar.inputDescripcion} placeholder="Ingresa la Descripción" label="Ingresa la Descripción" />
 
+                                          <View style={estilos_agregar.container}>
+                                                <Title>Fecha</Title>
+                                                <Icon onPress={this.datepicker} name="calendar" color='#4747d1' size={44} />
+                                                <View>
+                                                      <View>
+                                                            <Button onPress={this.datepicker} >{String(this.state.date.getDate()).padStart(2, '0')}/{String(this.state.date.getMonth() + 1).padStart(2, '0')}/{this.state.date.getFullYear().toString()}</Button>
+                                                      </View>
+                                                      {show && <DateTimePicker value={date}
+                                                            mode={mode}
+                                                            is24Hour={true}
+                                                            display="default"
+                                                            onChange={this.setDate} />
+                                                      }
+                                                </View>
+                                          </View>
 
                                           <View style={estilos_agregar.container2}>
                                                 <View style={estilos_agregar.container}>
@@ -214,39 +296,6 @@ export default class agregar extends React.Component {
                                                       selectedStar={(rating) => this.onPressCupo(rating)}
                                                       fullStarColor={'#4747d1'}
                                                 />
-                                          </View>
-
-
-                                          {/* <View style={estilos_agregar.container2}>
-                                                <View style={estilos_agregar.container}>
-                                                      <Title>Hora</Title>
-                                                      <Icon name="clock-o" color='#4747d1' size={44} />
-                                                      <TextInput name='Hora_Inicio' value={this.state.hora_inicio} onChangeText={(hora_inicio) => this.setState({ hora_inicio })}
-                                                            mode='outlined' style={estilos_agregar.input} placeholder="Ingresa la Hora de Inicio" label="Ingresa la Hora de Inicio" />
-                                                      <TextInput name='Hora_Inicio' value={this.state.hora_fin} onChangeText={(hora_inicio) => this.setState({ hora_inicio })}
-                                                            mode='outlined' style={estilos_agregar.input} placeholder="Ingresa la Hora de Inicio" label="Ingresa la Hora de Inicio" />
-                                                </View>
-                                                <View style={estilos_agregar.container}>
-                                                      <Title>Fecha</Title>
-                                                      <Icon name="calendar" color='#4747d1' size={44} />
-                                                      <TextInput name='Fecha' value={this.state.fecha} onChangeText={(fecha) => this.setState({ fecha })}
-                                                            mode='outlined' style={estilos_agregar.input} placeholder="Ingresa la Fecha" label="Ingresa la Fecha" />
-                                                </View>
-                                          </View> */}
-
-                                          <View>
-                                                <View>
-                                                      <Button onPress={this.datepicker} >{this.state.date.toDateString()}</Button>
-                                                </View>
-                                                <View>
-                                                      <Button onPress={this.timepicker} >Show time picker!</Button>
-                                                </View>
-                                                {show && <DateTimePicker value={date}
-                                                      mode={mode}
-                                                      is24Hour={true}
-                                                      display="default"
-                                                      onChange={this.setDate} />
-                                                }
                                           </View>
                                     </View>
 
@@ -305,7 +354,7 @@ const estilos_agregar = StyleSheet.create({
       },
       inputDescripcion: {
             flex: 0,
-            height: 200,
+            height: 100,
             width: 300,
             justifyContent: 'center',
             alignItems: 'stretch',
