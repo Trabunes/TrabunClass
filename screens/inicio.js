@@ -71,6 +71,19 @@ export default class inicio extends React.Component {
                   })
             })
       }
+      anularInscripcion = (id_clase) => {
+            fetch('http://192.168.1.156/backend/eliminar.php', {
+                  method: 'POST',
+                  headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                        rut_asistente: this.state.rut,
+                        id_clase: id_clase,
+                  })
+            })
+      }
       datosUsuario(rut) {
             fetch('http://192.168.1.156/backend/buscar.php', {
                   method: 'POST',
@@ -91,6 +104,8 @@ export default class inicio extends React.Component {
                         this.setState({ usuario: data })
                   })
       }
+
+      
 
       misClases(rut) {
             fetch('http://192.168.1.156/backend/backend.php', {
@@ -187,7 +202,7 @@ export default class inicio extends React.Component {
                   if (this.state.usuario[0].tipo == 0) {
                         return (
                               <ScrollView style={styles.container}>
-                                    <SecondRoute inscritas={this.state.inscritas} />
+                                    <SecondRoute rut={this.state.rut} inscritas={this.state.inscritas} />
                               </ScrollView>
                         )
                   }
@@ -202,7 +217,7 @@ export default class inicio extends React.Component {
                         )
                   }
             } else {
-                  return (<View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#773192'}}>
+                  return (<View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#562583'}}>
                         <Image source={imagotipo} style={styles.imagotipo} ></Image>
                         <Text style={{color: 'white'}}>Cargando Datos...</Text><ActivityIndicator size='large'/>
                         </View>)
@@ -300,6 +315,19 @@ const FirstRoute = (props) => {
 }
 
 const SecondRoute = (props) => {
+      anularInscripcion = (id_clase) => {
+            fetch('http://192.168.1.156/backend/eliminar.php', {
+                  method: 'POST',
+                  headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                        rut_asistente: props.rut,
+                        id_clase: id_clase,
+                  })
+            })
+      }
       contents = props.inscritas.map((item, i) => {
             return (
                   <Card style={styles.carta} key={i}>
@@ -309,9 +337,8 @@ const SecondRoute = (props) => {
                               title={item.nombre + ' ' + item.apellido}
                               subtitle={item.rut}
                         />
-                        <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+                        {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
                         <Card.Actions style={estilo_inicio.container}>
-                              <Button mode="contained" key={item.id_clase} onPress={() => this._onDelete(item.id_clase)} style={styles.botonInscrito}>Anular Inscripción</Button>
                         </Card.Actions>
                         <Card.Content>
                               <View style={estilo_inicio.container}>
@@ -320,7 +347,7 @@ const SecondRoute = (props) => {
                                     <Paragraph>{item.descripcion}</Paragraph>
 
                                     {/* Se crea una nueva vista para alinear los iconos */}
-                                    <View style={inicio.viewIcons}>
+                                    {/* <View style={inicio.viewIcons}>
                                           <StarRating
                                                 disabled={false}
                                                 maxStars={5}
@@ -328,7 +355,7 @@ const SecondRoute = (props) => {
                                                 selectedStar={(rating) => this.onStarRatingPress(rating)}
                                                 fullStarColor={'#4747d1'}
                                           />
-                                    </View>
+                                    </View> */}
                                     {/* ----------------------------------------------- */}
                               </View>
 
@@ -359,7 +386,7 @@ const SecondRoute = (props) => {
                                           <Text>{item.hora_inicio}      {item.hora_fin}</Text>
                                     </View>
                               </View>
-
+                              <Button mode="contained" key={item.id_clase} onPress={() => this.anularInscripcion(item.id_clase)} style={styles.botonInscrito}>Anular Inscripción</Button>
                         </Card.Content>
 
                   </Card>
@@ -407,7 +434,7 @@ const styles = StyleSheet.create({
             width: 230,
             alignSelf: 'center',
             marginLeft: 10,
-            backgroundColor: '#562583',
+            backgroundColor: 'red',
             borderRadius: 25,
       },
       imagotipo: {

@@ -4,6 +4,7 @@ import { Card, Paragraph, Title, ActivityIndicator, Button } from 'react-native-
 import Carousel from 'react-native-snap-carousel';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 const { height, width } = Dimensions.get('window')
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 
 export default class buscar extends React.Component {
@@ -21,6 +22,21 @@ export default class buscar extends React.Component {
       }
 
       inscribir(id_clase, rut) {
+            fetch('http://192.168.1.156/backend/verificar.php', {
+                  method: 'POST',
+                  headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                        rut_usuario_agregar: rut,
+                        id_clase: id_clase,
+                  })
+            })
+            .then((res) =>
+                  console.warn(res)
+            )
+
             fetch('http://192.168.1.156/backend/agregar.php', {
                   method: 'POST',
                   headers: {
@@ -34,22 +50,22 @@ export default class buscar extends React.Component {
             })
       }
 
-      validacionInscrito(id_clase, rut){
-            fetch('http://192.168.1.156/backend/backend.php', {
-                  method: 'POST',
-                  headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                        rut_asistente: rut,
-                        id_clase: id_clase,
-                  })
-            })
-            .then((res) => {
-                  console.log(res.json());
-            })
-      }
+      // validacionInscrito(id_clase, rut) {
+      //       fetch('http://192.168.1.156/backend/backend.php', {
+      //             method: 'POST',
+      //             headers: {
+      //                   'Accept': 'application/json',
+      //                   'Content-Type': 'application/json',
+      //             },
+      //             body: JSON.stringify({
+      //                   rut_verificar: rut,
+      //                   id_clase: id_clase,
+      //             })
+      //       })
+      //             .then((res) => {
+      //                   console.warn(res.json());
+      //             })
+      // }
 
       componentDidMount() {
             const { navigation } = this.props;
@@ -133,7 +149,7 @@ export default class buscar extends React.Component {
                         <Card.Content>
                               <Paragraph key={i} >{item.descripcion} </Paragraph>
                         </Card.Content >
-                              <Text>{'\n'}</Text>
+                        <Text>{'\n'}</Text>
                         <Button onPress={() => this.inscribir(item.id_clase, this.state.rut)} style={estilos_buscar.boton}><Text>Inscribirse</Text></Button>
                   </Card>
             );
@@ -141,47 +157,78 @@ export default class buscar extends React.Component {
 
 
       render() {
-            matematicas = this.state.matematicas.map((item, i) =>
+            matematicas = this.state.matematicas.map((item, i, z) =>
                   <Card key={i} style={estilos_buscar.carta} onPress={() => { console.log('onPress'); }} >
                         <Card.Title title={item.titulo} subtitle={item.rut} />
                         <Card.Content>
                               <Paragraph key={i} >{item.descripcion} </Paragraph>
+                              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', paddingTop: 15 }}>
+                                    <Paragraph key={i} ><Icon name="money" color='black' size={16} /> ${item.costo}</Paragraph>
+                                    <Paragraph key={z} ><Icon name="map" color='black' size={16} /> {item.lugar}</Paragraph>
+                              </View>
+                              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', paddingBottom: 15 }}>
+                                    <Paragraph key={i} ><Icon name="user" color='black' size={16} /> {item.cupo}</Paragraph>
+                                    <Paragraph key={z} ><Icon name="calendar" color='black' size={16} /> {item.fecha}</Paragraph>
+                              </View>
+                              <Button onPress={() => this.inscribir(item.id_clase, this.state.rut)} style={estilos_buscar.boton}><Text>Inscribirse</Text></Button>
                         </Card.Content >
-                        <Text>{'\n'}</Text>
-                        <Button onPress={() => this.inscribir(item.id_clase, this.state.rut)} style={estilos_buscar.boton}><Text>Inscribirse</Text></Button>
                   </Card>
             )
 
-            deportes = this.state.deportes.map((item, i) =>
+            deportes = this.state.deportes.map((item, i, z) =>
                   <Card key={i} style={estilos_buscar.carta} onPress={() => { console.log('onPress'); }} >
                         <Card.Title title={item.titulo} subtitle={item.rut} />
                         <Card.Content>
                               <Paragraph key={i} >{item.descripcion} </Paragraph>
+                              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', paddingTop: 15 }}>
+                                    <Paragraph key={i} ><Icon name="money" color='black' size={16} /> ${item.costo}</Paragraph>
+                                    <Paragraph key={z} ><Icon name="map" color='black' size={16} /> {item.lugar}</Paragraph>
+                              </View>
+                              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', paddingBottom: 15 }}>
+                                    <Paragraph key={i} ><Icon name="user" color='black' size={16} /> {item.cupo}</Paragraph>
+                                    <Paragraph key={z} ><Icon name="calendar" color='black' size={16} /> {item.fecha}</Paragraph>
+                              </View>
+                              <Text>{'\n'}</Text>
+                              <Button onPress={() => this.inscribir(item.id_clase, this.state.rut)} style={estilos_buscar.boton}><Text>Inscribirse</Text></Button>
                         </Card.Content >
-                        <Text>{'\n'}</Text>
-                        <Button onPress={() => this.inscribir(item.id_clase, this.state.rut)} style={estilos_buscar.boton}><Text>Inscribirse</Text></Button>
                   </Card>
             )
 
-            tecnologia = this.state.tecnologia.map((item, i) =>
+            tecnologia = this.state.tecnologia.map((item, i, z) =>
                   <Card key={i} style={estilos_buscar.carta} onPress={() => { console.log('onPress'); }} >
                         <Card.Title title={item.titulo} subtitle={item.rut} />
                         <Card.Content>
                               <Paragraph key={i} >{item.descripcion} </Paragraph>
+                              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', paddingTop: 15 }}>
+                                    <Paragraph key={i} ><Icon name="money" color='black' size={16} /> ${item.costo}</Paragraph>
+                                    <Paragraph key={z} ><Icon name="map" color='black' size={16} /> {item.lugar}</Paragraph>
+                              </View>
+                              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', paddingBottom: 15 }}>
+                                    <Paragraph key={i} ><Icon name="user" color='black' size={16} /> {item.cupo}</Paragraph>
+                                    <Paragraph key={z} ><Icon name="calendar" color='black' size={16} /> {item.fecha}</Paragraph>
+                              </View>
+                              <Text>{'\n'}</Text>
+                              <Button onPress={() => this.inscribir(item.id_clase, this.state.rut)} style={estilos_buscar.boton}><Text>Inscribirse</Text></Button>
                         </Card.Content >
-                        <Text>{'\n'}</Text>
-                        <Button onPress={() => this.inscribir(item.id_clase, this.state.rut)} style={estilos_buscar.boton}><Text>Inscribirse</Text></Button>
                   </Card>
             )
 
-            arte = this.state.arte.map((item, i) =>
+            arte = this.state.arte.map((item, i, z) =>
                   <Card key={i} style={estilos_buscar.carta} onPress={() => { console.log('onPress'); }} >
                         <Card.Title title={item.titulo} subtitle={item.rut} />
                         <Card.Content>
                               <Paragraph key={i} >{item.descripcion} </Paragraph>
+                              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', paddingTop: 15 }}>
+                                    <Paragraph key={i} ><Icon name="money" color='black' size={16} /> ${item.costo}</Paragraph>
+                                    <Paragraph key={z} ><Icon name="map" color='black' size={16} /> {item.lugar}</Paragraph>
+                              </View>
+                              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', paddingBottom: 15 }}>
+                                    <Paragraph key={i} ><Icon name="user" color='black' size={16} /> {item.cupo}</Paragraph>
+                                    <Paragraph key={z} ><Icon name="calendar" color='black' size={16} /> {item.fecha}</Paragraph>
+                              </View>
+                              <Text>{'\n'}</Text>
+                              <Button onPress={() => this.inscribir(item.id_clase, this.state.rut)} style={estilos_buscar.boton}><Text>Inscribirse</Text></Button>
                         </Card.Content >
-                        <Text>{'\n'}</Text>
-                        <Button onPress={() => this.inscribir(item.id_clase, this.state.rut)} style={estilos_buscar.boton}><Text>Inscribirse</Text></Button>
                   </Card>
             )
 
@@ -247,7 +294,6 @@ const estilos_buscar = StyleSheet.create({
             borderRadius: 20 / 2,
             marginTop: 5,
             marginBottom: 5,
-            height: 200,
             width: 320,
             marginRight: 25,
             marginLeft: 25,

@@ -24,6 +24,7 @@ export default class agregar extends React.Component {
             this.state = {
                   sesion: 0,
                   data: [],
+                  usuario: [],
                   id_clase: '',
                   rut: '',
                   rut_clase: '',
@@ -70,7 +71,26 @@ export default class agregar extends React.Component {
                   })
 
       }
-
+      datosUsuario(rut) {
+            fetch('http://192.168.1.156/backend/buscar.php', {
+                  method: 'POST',
+                  headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                        rut_perfil: rut,
+                  })
+            })
+                  .then((response) => response.json())
+                  .then((res) => {
+                        let data = [];
+                        Object.values(res).forEach(item => {
+                              data = data.concat(item);
+                        });
+                        this.setState({ usuario: data[0] })
+                  })
+      }
       agregar = () => {
             fetch('http://192.168.1.156/backend/agregar.php', {
                   method: 'POST',
@@ -148,7 +168,10 @@ export default class agregar extends React.Component {
       }
 
       componentDidMount() {
+            const { navigation } = this.props;
+            const rut = navigation.getParam('rut', this.state.id_clase);
             this.getCategorias();
+            this.datosUsuario(rut);
       }
 
       setDate = (event, date) => {
@@ -196,116 +219,217 @@ export default class agregar extends React.Component {
                   this.state.categoria.map((item, i) => {
                         return (
                               <View>
-                              <Picker.Item key={i} label={item.nombre_categoria} value={item.nombre_categoria} />
+                                    <Picker.Item key={i} label={item.nombre_categoria} value={item.nombre_categoria} />
                               </View>
                         )
                   })
-            }else{
-                  return(
+            } else {
+                  return (
                         <View>
                               <Picker.Item label="Cargando categorías..." value='NA' />
                         </View>
                   )
             }
       }
-      render() {
-
+      renderAgregar() {
             const { show, date, mode } = this.state;
-            return (
-                  <ScrollView flexDirection='column' style={estilos_agregar.scroll}>
-                        <Card style={estilos_agregar.carta} >
-                              <Card.Content>
-                                    <View style={estilos_agregar.container}>
-                                          <Title alignItems='center'>Agregar Clase</Title>
+            if (this.state.usuario.tipo == 0) {
+                  return (
+                        <View>
+                              <Text>Registrate como Tutor para publicar tus clases</Text>
+                        </View>
 
-                                          <Title>Título de la Clase</Title>
-                                          <TextInput name='Titulo' value={this.state.titulo} onChangeText={(titulo) => this.setState({ titulo })}
-                                                mode='outlined' style={estilos_agregar.inputTitulo} placeholder="Clases de ..." label="Ingresa el Título" />
-
-                                          <Title>Categoría de la Clase</Title>
-                                          <Picker
-                                          selectedValue={this.state.categoria}
-                                          style={{height: 50, width: 180}}
-                                          onValueChange={(itemValue, itemIndex) =>
-                                          this.setState({categoria: itemValue})
-                                          }>
-                                          <Picker.Item label="Matematicas" value="Matematicas" />
-                                          <Picker.Item label="Deportes" value="Deportes" />
-                                          <Picker.Item label="Tecnología" value="Tecnología" />
-                                          <Picker.Item label="Arte" value="Arte" />
-                                          </Picker>
-
-                                          {/* <Picker
-                                          selectedValue={this.state.categoria}
-                                          style={{height: 50, width: 100}}
-                                          onValueChange={(itemValue, itemIndex) =>
-                                          this.setState({categoria: itemValue})
-                                          }>
- 
-                                          <Picker.Item label="Java" value="java" />
-                                          <Picker.Item label="JavaScript" value="js" />
-                                          </Picker> */}
-
-                                          <Title>Descripción</Title>
-                                          <TextInput name='Descripcion' multiline={true} value={this.state.descripcion} onChangeText={(descripcion) => this.setState({ descripcion })}
-                                                mode='outlined' style={estilos_agregar.inputDescripcion} placeholder="Ingresa la Descripción" label="Ingresa la Descripción" />
-
+                  )
+            }
+            if (this.state.usuario.tipo == 1) {
+                  return (
+                        <ScrollView flexDirection='column' style={estilos_agregar.scroll}>
+                              <Card style={estilos_agregar.carta} >
+                                    <Card.Content>
                                           <View style={estilos_agregar.container}>
-                                                <Title>Fecha</Title>
-                                                <Icon onPress={this.datepicker} name="calendar" color='#4747d1' size={44} />
-                                                <View>
+                                                <Title alignItems='center'>Agregar Clase</Title>
+
+                                                <Title>Título de la Clase</Title>
+                                                <TextInput name='Titulo' value={this.state.titulo} onChangeText={(titulo) => this.setState({ titulo })}
+                                                      mode='outlined' style={estilos_agregar.inputTitulo} placeholder="Clases de ..." label="Ingresa el Título" />
+
+                                                <Title>Categoría de la Clase</Title>
+                                                <Picker
+                                                      selectedValue={this.state.categoria}
+                                                      style={{ height: 50, width: 180 }}
+                                                      onValueChange={(itemValue, itemIndex) =>
+                                                            this.setState({ categoria: itemValue })
+                                                      }>
+                                                      <Picker.Item label="Matematicas" value="Matematicas" />
+                                                      <Picker.Item label="Deportes" value="Deportes" />
+                                                      <Picker.Item label="Tecnología" value="Tecnología" />
+                                                      <Picker.Item label="Arte" value="Arte" />
+                                                </Picker>
+
+                                                <Title>Descripción</Title>
+                                                <TextInput name='Descripcion' multiline={true} value={this.state.descripcion} onChangeText={(descripcion) => this.setState({ descripcion })}
+                                                      mode='outlined' style={estilos_agregar.inputDescripcion} placeholder="Ingresa la Descripción" label="Ingresa la Descripción" />
+
+                                                <View style={estilos_agregar.container}>
+                                                      <Title>Fecha</Title>
+                                                      <Icon onPress={this.datepicker} name="calendar" color='#4747d1' size={44} />
                                                       <View>
-                                                            <Button onPress={this.datepicker} >{String(this.state.date.getDate()).padStart(2, '0')}/{String(this.state.date.getMonth() + 1).padStart(2, '0')}/{this.state.date.getFullYear().toString()}</Button>
+                                                            <View>
+                                                                  <Button onPress={this.datepicker} >{String(this.state.date.getDate()).padStart(2, '0')}/{String(this.state.date.getMonth() + 1).padStart(2, '0')}/{this.state.date.getFullYear().toString()}</Button>
+                                                            </View>
+                                                            {show && <DateTimePicker value={date}
+                                                                  mode={mode}
+                                                                  is24Hour={true}
+                                                                  display="default"
+                                                                  onChange={this.setDate} />
+                                                            }
                                                       </View>
-                                                      {show && <DateTimePicker value={date}
-                                                            mode={mode}
-                                                            is24Hour={true}
-                                                            display="default"
-                                                            onChange={this.setDate} />
-                                                      }
+                                                </View>
+
+                                                <View style={estilos_agregar.container2}>
+                                                      <View style={estilos_agregar.container}>
+                                                            <Title>Valor</Title>
+                                                            <Icon name="money" color='#4747d1' size={44} />
+                                                            <TextInput name='Titulo' value={this.state.costo} onChangeText={(costo) => this.setState({ costo })}
+                                                                  mode='outlined' style={estilos_agregar.input} placeholder="Ingresa el Valor" label="Ej: 5000" />
+                                                      </View>
+
+                                                      <View style={estilos_agregar.container}>
+                                                            <Title>Ubicación</Title>
+                                                            <Icon name="map" color='#4747d1' size={44} />
+                                                            <TextInput name='Titulo' value={this.state.titulo} onChangeText={(titulo) => this.setState({ titulo })}
+                                                                  mode='outlined' style={estilos_agregar.input} placeholder="Ingresa la Ubicación" label="La Serena" />
+                                                      </View>
+                                                </View>
+
+                                                <Title>Cupos</Title>
+                                                <View style={estilos_agregar.container2}>
+                                                      <StarRating
+                                                            starStyle={estilos_agregar.cupo}
+                                                            starSize={44}
+                                                            disabled={false}
+                                                            emptyStar={'user-o'}
+                                                            fullStar={'user'}
+                                                            iconSet={'FontAwesome'}
+                                                            maxStars={5}
+                                                            rating={this.state.cupo}
+                                                            selectedStar={(rating) => this.onPressCupo(rating)}
+                                                            fullStarColor={'#4747d1'}
+                                                      />
                                                 </View>
                                           </View>
 
-                                          <View style={estilos_agregar.container2}>
+                                    </Card.Content>
+                                    <Card.Actions style={{ justifyContent: 'center' }}>
+                                          <Button mode="contained" style={estilos_agregar.boton} onPress={this.agregar}>Agregar</Button>
+                                    </Card.Actions>
+                              </Card>
+                        </ScrollView>
+                  )
+            }
+      }
+      render() {
+            if (this.state.usuario != '') {
+                  if (this.state.usuario.tipo == 0) {
+                        return (
+                              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#562583' }}>
+                                    {/* <Image source={imagotipo} style={styles.imagotipo} ></Image> */}
+                              <Icon name="graduation-cap" color='white' size={44}/>
+                                    <Text style={{color: 'white'}}>Debes registrate como Tutor para publicar tus clases.</Text>
+                              </View>
+                              )
+                  } else {
+                        return (
+                              <ScrollView flexDirection='column' style={estilos_agregar.scroll}>
+                                    <Card style={estilos_agregar.carta} >
+                                          <Card.Content>
                                                 <View style={estilos_agregar.container}>
-                                                      <Title>Valor</Title>
-                                                      <Icon name="money" color='#4747d1' size={44} />
-                                                      <TextInput name='Titulo' value={this.state.costo} onChangeText={(costo) => this.setState({ costo })}
-                                                            mode='outlined' style={estilos_agregar.input} placeholder="Ingresa el Valor" label="Ej: 5000" />
-                                                </View>
+                                                      <Title alignItems='center'>Agregar Clase</Title>
 
-                                                <View style={estilos_agregar.container}>
-                                                      <Title>Ubicación</Title>
-                                                      <Icon name="map" color='#4747d1' size={44} />
+                                                      <Title>Título de la Clase</Title>
                                                       <TextInput name='Titulo' value={this.state.titulo} onChangeText={(titulo) => this.setState({ titulo })}
-                                                            mode='outlined' style={estilos_agregar.input} placeholder="Ingresa la Ubicación" label="La Serena" />
+                                                            mode='outlined' style={estilos_agregar.inputTitulo} placeholder="Clases de ..." label="Ingresa el Título" />
+
+                                                      <Title>Categoría de la Clase</Title>
+                                                      <Picker
+                                                            selectedValue={this.state.categoria}
+                                                            style={{ height: 50, width: 180 }}
+                                                            onValueChange={(itemValue, itemIndex) =>
+                                                                  this.setState({ categoria: itemValue })
+                                                            }>
+                                                            <Picker.Item label="Matematicas" value="Matematicas" />
+                                                            <Picker.Item label="Deportes" value="Deportes" />
+                                                            <Picker.Item label="Tecnología" value="Tecnología" />
+                                                            <Picker.Item label="Arte" value="Arte" />
+                                                      </Picker>
+
+                                                      <Title>Descripción</Title>
+                                                      <TextInput name='Descripcion' multiline={true} value={this.state.descripcion} onChangeText={(descripcion) => this.setState({ descripcion })}
+                                                            mode='outlined' style={estilos_agregar.inputDescripcion} placeholder="Ingresa la Descripción" label="Ingresa la Descripción" />
+
+                                                      <View style={estilos_agregar.container}>
+                                                            <Title>Fecha</Title>
+                                                            <Icon onPress={this.datepicker} name="calendar" color='#4747d1' size={44} />
+                                                            <View>
+                                                                  <View>
+                                                                        <Button onPress={this.datepicker} >{String(this.state.date.getDate()).padStart(2, '0')}/{String(this.state.date.getMonth() + 1).padStart(2, '0')}/{this.state.date.getFullYear().toString()}</Button>
+                                                                  </View>
+                                                                  {show && <DateTimePicker value={date}
+                                                                        mode={mode}
+                                                                        is24Hour={true}
+                                                                        display="default"
+                                                                        onChange={this.setDate} />
+                                                                  }
+                                                            </View>
+                                                      </View>
+
+                                                      <View style={estilos_agregar.container2}>
+                                                            <View style={estilos_agregar.container}>
+                                                                  <Title>Valor</Title>
+                                                                  <Icon name="money" color='#4747d1' size={44} />
+                                                                  <TextInput name='Titulo' value={this.state.costo} onChangeText={(costo) => this.setState({ costo })}
+                                                                        mode='outlined' style={estilos_agregar.input} placeholder="Ingresa el Valor" label="Ej: 5000" />
+                                                            </View>
+
+                                                            <View style={estilos_agregar.container}>
+                                                                  <Title>Ubicación</Title>
+                                                                  <Icon name="map" color='#4747d1' size={44} />
+                                                                  <TextInput name='Titulo' value={this.state.titulo} onChangeText={(titulo) => this.setState({ titulo })}
+                                                                        mode='outlined' style={estilos_agregar.input} placeholder="Ingresa la Ubicación" label="La Serena" />
+                                                            </View>
+                                                      </View>
+
+                                                      <Title>Cupos</Title>
+                                                      <View style={estilos_agregar.container2}>
+                                                            <StarRating
+                                                                  starStyle={estilos_agregar.cupo}
+                                                                  starSize={44}
+                                                                  disabled={false}
+                                                                  emptyStar={'user-o'}
+                                                                  fullStar={'user'}
+                                                                  iconSet={'FontAwesome'}
+                                                                  maxStars={5}
+                                                                  rating={this.state.cupo}
+                                                                  selectedStar={(rating) => this.onPressCupo(rating)}
+                                                                  fullStarColor={'#4747d1'}
+                                                            />
+                                                      </View>
                                                 </View>
-                                          </View>
 
-                                          <Title>Cupos</Title>
-                                          <View style={estilos_agregar.container2}>
-                                                <StarRating
-                                                      starStyle={estilos_agregar.cupo}
-                                                      starSize={44}
-                                                      disabled={false}
-                                                      emptyStar={'user-o'}
-                                                      fullStar={'user'}
-                                                      iconSet={'FontAwesome'}
-                                                      maxStars={5}
-                                                      rating={this.state.cupo}
-                                                      selectedStar={(rating) => this.onPressCupo(rating)}
-                                                      fullStarColor={'#4747d1'}
-                                                />
-                                          </View>
-                                    </View>
+                                          </Card.Content>
+                                          <Card.Actions style={{ justifyContent: 'center' }}>
+                                                <Button mode="contained" style={estilos_agregar.boton} onPress={this.agregar}>Agregar</Button>
+                                          </Card.Actions>
+                                    </Card>
+                              </ScrollView>
+                        )
+                  }
+            } else {
+            }
+            const { show, date, mode } = this.state;
 
-                              </Card.Content>
-                              <Card.Actions style={{ justifyContent: 'center' }}>
-                                    <Button mode="contained" style={estilos_agregar.boton} onPress={this.agregar}>Agregar</Button>
-                                    <Button mode="contained" style={estilos_agregar.boton2} onPress={this._onUpdate}>Modificar</Button>
-                              </Card.Actions>
-                        </Card>
-                  </ScrollView>
+            return (
+                  <View></View>
             )
       }
 }

@@ -205,7 +205,6 @@ mostrarIcono = (tipo) => {
 //Clase hijo de perfil que sera impreso dentro de una TabView
 const HijoPerfil = (props) => {
 contents = props.data.map( (item, i) => {
-      console.warn(props.data);
     return (
          <ImageBackground key={i} source={Fondotrabun} style={estiloPerfil.backgroundContainer}>
                 <ScrollView>
