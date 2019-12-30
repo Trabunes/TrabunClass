@@ -57,7 +57,6 @@ export default class modificar extends React.Component{
     }
 
     _onUpdate = () => {
-        Alert.alert('Apretación')
         fetch('http://192.168.1.156/backend/modificar.php', {
               method: 'POST',
               headers: {

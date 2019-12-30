@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, ScrollView, View, Dimensions, Text, Alert } from 'react-native'
+import { StyleSheet, ScrollView, View, Dimensions, Text, Alert, RefreshControl } from 'react-native'
 import { Card, Paragraph, Title, ActivityIndicator, Button } from 'react-native-paper'
 import Carousel from 'react-native-snap-carousel';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -11,6 +11,7 @@ export default class buscar extends React.Component {
       constructor() {
             super()
             this.state = {
+                  refreshing: false,
                   data: [],
                   rut: '',
                   categoria: [],
@@ -22,21 +23,7 @@ export default class buscar extends React.Component {
       }
 
       inscribir(id_clase, rut) {
-            fetch('http://192.168.1.156/backend/verificar.php', {
-                  method: 'POST',
-                  headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                        rut_usuario_agregar: rut,
-                        id_clase: id_clase,
-                  })
-            })
-            .then((res) =>
-                  console.warn(res)
-            )
-
+            console.warn(id_clase);
             fetch('http://192.168.1.156/backend/agregar.php', {
                   method: 'POST',
                   headers: {
@@ -49,23 +36,6 @@ export default class buscar extends React.Component {
                   })
             })
       }
-
-      // validacionInscrito(id_clase, rut) {
-      //       fetch('http://192.168.1.156/backend/backend.php', {
-      //             method: 'POST',
-      //             headers: {
-      //                   'Accept': 'application/json',
-      //                   'Content-Type': 'application/json',
-      //             },
-      //             body: JSON.stringify({
-      //                   rut_verificar: rut,
-      //                   id_clase: id_clase,
-      //             })
-      //       })
-      //             .then((res) => {
-      //                   console.warn(res.json());
-      //             })
-      // }
 
       componentDidMount() {
             const { navigation } = this.props;
@@ -141,20 +111,6 @@ export default class buscar extends React.Component {
                         return data;
                   })
       }
-
-      _renderItem({ item, i }) {
-            return (
-                  <Card style={estilos_buscar.carta} onPress={() => { console.log('onPress'); }} >
-                        <Card.Title title={item.titulo} subtitle={item.rut} />
-                        <Card.Content>
-                              <Paragraph key={i} >{item.descripcion} </Paragraph>
-                        </Card.Content >
-                        <Text>{'\n'}</Text>
-                        <Button onPress={() => this.inscribir(item.id_clase, this.state.rut)} style={estilos_buscar.boton}><Text>Inscribirse</Text></Button>
-                  </Card>
-            );
-      }
-
 
       render() {
             matematicas = this.state.matematicas.map((item, i, z) =>
@@ -234,6 +190,11 @@ export default class buscar extends React.Component {
 
             return (
                   <ScrollView style={estilos_buscar.view} flexDirection='column'>
+
+                        <RefreshControl
+                              refreshing={this.state.refreshing}
+                              onRefresh={this._onRefresh} />
+
                         <Title style={estilos_buscar.titulo}>{this.state.categoria != '' ? 'Matematicas' : 'Cargando'}</Title>
                         {/* <Carousel layout={'default'}
                               ref={(c) => { this._carousel = c; }}
@@ -281,7 +242,10 @@ export default class buscar extends React.Component {
                               scrollEventThrottle={16}>
                               {arte}
                         </ScrollView>
-
+                        <RefreshControl
+                                          refreshing={this.state.refreshing}
+                                          onRefresh={this._onRefresh}
+                                    />
                   </ScrollView>
 
 

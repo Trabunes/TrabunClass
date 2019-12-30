@@ -37,7 +37,7 @@ export default class inicio extends React.Component {
                   starCount: rating
             });
       }
-      _onRefresh = () => {
+      _onRefreshTutor = () => {
             fetch('http://192.168.1.156/backend/backend.php', {
                   method: 'POST',
                   headers: {
@@ -55,6 +55,28 @@ export default class inicio extends React.Component {
                               data = data.concat(item);
                         });
                         this.setState({ data: data })
+
+                  })
+
+      }
+      _onRefreshUsuario = () => {
+            fetch('http://192.168.1.156/backend/backend.php', {
+                  method: 'POST',
+                  headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                        rut_usuario_inscritos: this.state.usuario[0].rut_usuario,
+                  })
+            })
+                  .then((response) => response.json())
+                  .then((res) => {
+                        let data = [];
+                        Object.values(res).forEach(item => {
+                              data = data.concat(item);
+                        });
+                        this.setState({ inscritas: data })
 
                   })
 
@@ -127,9 +149,8 @@ export default class inicio extends React.Component {
 
       componentDidMount() {
             const { navigation } = this.props;
-            console.warn(this.props);
-
             const rut = navigation.getParam('rut', this.state.id_clase);
+            this.setState({rut: rut})
             console.log(rut)
             this.misClases(rut);
             this.inscritas(rut);
@@ -199,10 +220,23 @@ export default class inicio extends React.Component {
 
       render() {
             if (this.state.usuario != '') {
+                  console.warn(this.state.usuario[0].rut_usuario);
                   if (this.state.usuario[0].tipo == 0) {
                         return (
-                              <ScrollView style={styles.container}>
+                              <ScrollView refreshControl={
+
+                                    <RefreshControl
+                                          refreshing={this.state.refreshing}
+                                          onRefresh={this._onRefreshUsuario} />
+
+                              } style={styles.container}>
                                     <SecondRoute rut={this.state.rut} inscritas={this.state.inscritas} />
+
+                                    
+                                    <RefreshControl
+                                          refreshing={this.state.refreshing}
+                                          onRefresh={this._onRefreshUsuario}
+                                    />
                               </ScrollView>
                         )
                   }
@@ -212,7 +246,7 @@ export default class inicio extends React.Component {
 
                                     <RefreshControl
                                           refreshing={this.state.refreshing}
-                                          onRefresh={this._onRefresh} />
+                                          onRefresh={this._onRefreshTutor} />
 
                               } style={styles.container}>
                                     
@@ -231,7 +265,7 @@ export default class inicio extends React.Component {
 
                                     <RefreshControl
                                           refreshing={this.state.refreshing}
-                                          onRefresh={this._onRefresh}
+                                          onRefresh={this._onRefreshTutor}
                                     />
                               </ScrollView>
                         )
@@ -301,11 +335,10 @@ const FirstRoute = (props) => {
       if (props.data == '') {
             return (
                   <View style={{ height: height }}>
-                        <Text>Inscribite a una Clase</Text>
+                        <Text>Agrega una clase en el Modulo Agregar</Text>
                   </View>
             )
       } else {
-            console.warn(props.data);
             contents = props.data.map((item, i) => {
                   const { navigation } = props;
                   return (
@@ -394,6 +427,29 @@ const SecondRoute = (props) => {
                         id_clase: id_clase,
                   })
             })
+            Alert.alert('Has anulado la inscripción a esta clase');
+      }
+      _onRefresh = () => {
+            fetch('http://192.168.1.156/backend/backend.php', {
+                  method: 'POST',
+                  headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                        rut_usuario_inicio: this.state.usuario[0].rut_usuario,
+                  })
+            })
+                  .then((response) => response.json())
+                  .then((res) => {
+                        let data = [];
+                        Object.values(res).forEach(item => {
+                              data = data.concat(item);
+                        });
+                        this.setState({ data: data })
+
+                  })
+
       }
       contents = props.inscritas.map((item, i) => {
             return (
