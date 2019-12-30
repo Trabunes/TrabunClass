@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, ScrollView, View, Dimensions, Platform, Picker, Text } from 'react-native'
+import { StyleSheet, ScrollView, View, Dimensions, Platform, Picker, Text, Alert } from 'react-native'
 import { Card, Title, Paragraph, Button, TextInput, Chip, Avatar } from 'react-native-paper'
 import StarRating from 'react-native-star-rating';
 import Geolocation from '@react-native-community/geolocation';
@@ -29,8 +29,9 @@ export default class agregar extends React.Component {
                   rut: '',
                   rut_clase: '',
                   titulo: '',
+                  lugar: '',
                   categorias: [],
-                  categoria: '',
+                  picker: '0',
                   descripcion: '',
                   costo: '',
                   cupo: 3,
@@ -92,27 +93,42 @@ export default class agregar extends React.Component {
                   })
       }
       agregar = () => {
-            fetch('http://192.168.1.156/backend/agregar.php', {
-                  method: 'POST',
-                  headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                        id_clase: this.state.id_clase,
-                        _rut: this.state.rut,
-                        titulo: this.state.titulo,
-                        descripcion: this.state.descripcion,
-                        costo: this.state.costo,
-                        cupo: this.state.cupo,
-                        hora_inicio: this.state.hora_inicio,
-                        hora_fin: this.state.hora_fin,
-                        fecha: this.state.fecha,
-                        latitud: this.state.latitud,
-                        longitud: this.state.longitud,
-                  }),
+            if(this.state.titulo == ''){
+                  Alert.alert('Debe escribir un Titulo')
+            }
+            if(this.state.picker == 0){
+                  Alert.alert('Debe seleccionar una Categoría')
+            }
+            if(this.state.descripcion == ''){
+                  Alert.alert('Debe escribir una descripción')
+            }
+            if(this.state.costo == ''){
+                  Alert.alert('Debe ingresar un Valor por la Clase')
+            }
+            if(this.state.lugar == ''){
+                  Alert.alert('Debe seleccionar un Lugar para la Clase')
+            }
+            if(this.state.titulo != '' && this.state.picker != 0 && this.state.descripcion != '' && this.state.valor != '' && this.state.ubicacion != ''){
+                  fetch('http://192.168.1.156/backend/agregar.php', {
+                        method: 'POST',
+                        headers: {
+                              Accept: 'application/json',
+                              'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                              _rut: this.state.rut,
+                              titulo: this.state.titulo,
+                              descripcion: this.state.descripcion,
+                              categoria: this.state.picker,
+                              costo: this.state.costo,
+                              cupo: this.state.cupo,
+                              fecha: String(this.state.date.getDate()).padStart(2, '0')+'/'+String(this.state.date.getMonth() + 1).padStart(2, '0')+'/'+this.state.date.getFullYear().toString(),
+                              lugar: this.state.lugar,
+                        }),
+                  }).then(res =>  Alert.alert(res+'Se ha agregado la Clase'+String(this.state.date.getDate()).padStart(2, '0')+'/'+String(this.state.date.getMonth() + 1).padStart(2, '0')+'/'+this.state.date.getFullYear().toString())
+                  )
+            }
 
-            })
       }
       _onUpdate = () => {
             fetch('http://192.168.1.156/backend/modificar.php', {
@@ -131,7 +147,7 @@ export default class agregar extends React.Component {
                         cupo: this.state.cupo,
                         hora_inicio: this.state.hora_inicio,
                         hora_fin: this.state.hora_fin,
-                        fecha: this.state.fecha,
+                        fecha: String(this.state.date.getDate()).padStart(2, '0')+'/'+String(this.state.date.getMonth() + 1).padStart(2, '0')+'/'+this.state.date.getFullYear().toString(),
                         latitud: this.state.initialPosition.latitude,
                         longitud: this.state.initialPosition.longitude,
                   })
@@ -170,6 +186,7 @@ export default class agregar extends React.Component {
       componentDidMount() {
             const { navigation } = this.props;
             const rut = navigation.getParam('rut', this.state.id_clase);
+            this.setState({rut: rut})
             this.getCategorias();
             this.datosUsuario(rut);
       }
@@ -232,7 +249,7 @@ export default class agregar extends React.Component {
             }
       }
       renderAgregar() {
-            const { show, date, mode } = this.state;
+            const { show, date, mode, picker } = this.state;
             if (this.state.usuario.tipo == 0) {
                   return (
                         <View>
@@ -242,6 +259,8 @@ export default class agregar extends React.Component {
                   )
             }
             if (this.state.usuario.tipo == 1) {
+                  console.log(this.state.picker);
+
                   return (
                         <ScrollView flexDirection='column' style={estilos_agregar.scroll}>
                               <Card style={estilos_agregar.carta} >
@@ -255,15 +274,12 @@ export default class agregar extends React.Component {
 
                                                 <Title>Categoría de la Clase</Title>
                                                 <Picker
-                                                      selectedValue={this.state.categoria}
-                                                      style={{ height: 50, width: 180 }}
-                                                      onValueChange={(itemValue, itemIndex) =>
-                                                            this.setState({ categoria: itemValue })
-                                                      }>
-                                                      <Picker.Item label="Matematicas" value="Matematicas" />
-                                                      <Picker.Item label="Deportes" value="Deportes" />
-                                                      <Picker.Item label="Tecnología" value="Tecnología" />
-                                                      <Picker.Item label="Arte" value="Arte" />
+                                                      selectedValue={this.state.picker} style={{ height: 50, width: 180 }} mode='dropdown'
+                                                      onValueChange={(itemValue, itemIndex) => this.setState({ picker: itemValue })}>
+                                                      <Picker.Item label={this.state.picker} value="1" />
+                                                      <Picker.Item label="Deportes" value="2" />
+                                                      <Picker.Item label="Tecnología" value="3" />
+                                                      <Picker.Item label="Arte" value="4" />
                                                 </Picker>
 
                                                 <Title>Descripción</Title>
@@ -297,7 +313,7 @@ export default class agregar extends React.Component {
                                                       <View style={estilos_agregar.container}>
                                                             <Title>Ubicación</Title>
                                                             <Icon name="map" color='#4747d1' size={44} />
-                                                            <TextInput name='Titulo' value={this.state.titulo} onChangeText={(titulo) => this.setState({ titulo })}
+                                                            <TextInput name='Lugar' value={this.state.lugar} onChangeText={(lugar) => this.setState({ lugar })}
                                                                   mode='outlined' style={estilos_agregar.input} placeholder="Ingresa la Ubicación" label="La Serena" />
                                                       </View>
                                                 </View>
@@ -329,6 +345,17 @@ export default class agregar extends React.Component {
             }
       }
       render() {
+            console.log(this.state.rut);
+            console.log(this.state.titulo);
+            console.log(this.state.picker);
+            console.log(this.state.descripcion);
+            console.log(String(this.state.date.getDate()).padStart(2, '0')+'/'+String(this.state.date.getMonth() + 1).padStart(2, '0')+'/'+this.state.date.getFullYear().toString());
+            console.log(this.state.costo);
+            console.log(this.state.lugar);
+            console.log(this.state.cupo);
+
+            const { show, date, mode } = this.state;
+
             if (this.state.usuario != '') {
                   if (this.state.usuario.tipo == 0) {
                         return (
@@ -352,15 +379,16 @@ export default class agregar extends React.Component {
 
                                                       <Title>Categoría de la Clase</Title>
                                                       <Picker
-                                                            selectedValue={this.state.categoria}
+                                                            selectedValue={this.state.picker}
                                                             style={{ height: 50, width: 180 }}
                                                             onValueChange={(itemValue, itemIndex) =>
-                                                                  this.setState({ categoria: itemValue })
+                                                                  this.setState({ picker: itemValue })
                                                             }>
-                                                            <Picker.Item label="Matematicas" value="Matematicas" />
-                                                            <Picker.Item label="Deportes" value="Deportes" />
-                                                            <Picker.Item label="Tecnología" value="Tecnología" />
-                                                            <Picker.Item label="Arte" value="Arte" />
+                                                            <Picker.Item label="Selecciona una" value="0" />
+                                                            <Picker.Item label="Matematicas" value="1" />
+                                                            <Picker.Item label="Deportes" value="2" />
+                                                            <Picker.Item label="Tecnología" value="3" />
+                                                            <Picker.Item label="Arte" value="4" />
                                                       </Picker>
 
                                                       <Title>Descripción</Title>
@@ -394,7 +422,7 @@ export default class agregar extends React.Component {
                                                             <View style={estilos_agregar.container}>
                                                                   <Title>Ubicación</Title>
                                                                   <Icon name="map" color='#4747d1' size={44} />
-                                                                  <TextInput name='Titulo' value={this.state.titulo} onChangeText={(titulo) => this.setState({ titulo })}
+                                                                  <TextInput name='Titulo' value={this.state.lugar} onChangeText={(lugar) => this.setState({ lugar })}
                                                                         mode='outlined' style={estilos_agregar.input} placeholder="Ingresa la Ubicación" label="La Serena" />
                                                             </View>
                                                       </View>
@@ -418,7 +446,7 @@ export default class agregar extends React.Component {
 
                                           </Card.Content>
                                           <Card.Actions style={{ justifyContent: 'center' }}>
-                                                <Button mode="contained" style={estilos_agregar.boton} onPress={this.agregar}>Agregar</Button>
+                                                <Button mode="contained" style={estilos_agregar.boton} onPress={() => this.agregar()}>Agregar</Button>
                                           </Card.Actions>
                                     </Card>
                               </ScrollView>
@@ -426,8 +454,6 @@ export default class agregar extends React.Component {
                   }
             } else {
             }
-            const { show, date, mode } = this.state;
-
             return (
                   <View></View>
             )
