@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Card, Title, Paragraph, Button, TextInput, Searchbar, Chip, Avatar } from 'react-native-paper'
-import { StyleSheet, ScrollView, View, Text, RefreshControl, Dimensions, ActivityIndicator, Image } from 'react-native'
+import { StyleSheet, ScrollView, View, Text, RefreshControl, Dimensions, ActivityIndicator, Image, Alert } from 'react-native'
 import { TabView, SceneMap } from 'react-native-tab-view';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/FontAwesome'
@@ -45,7 +45,7 @@ export default class inicio extends React.Component {
                         'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({
-                        rut_usuario_inicio: this.state.rut,
+                        rut_usuario_inicio: this.state.usuario[0].rut_usuario,
                   })
             })
                   .then((response) => response.json())
@@ -104,9 +104,6 @@ export default class inicio extends React.Component {
                         this.setState({ usuario: data })
                   })
       }
-
-      
-
       misClases(rut) {
             fetch('http://192.168.1.156/backend/backend.php', {
                   method: 'POST',
@@ -130,6 +127,8 @@ export default class inicio extends React.Component {
 
       componentDidMount() {
             const { navigation } = this.props;
+            console.warn(this.props);
+
             const rut = navigation.getParam('rut', this.state.id_clase);
             console.log(rut)
             this.misClases(rut);
@@ -197,6 +196,7 @@ export default class inicio extends React.Component {
                         return null;
             }
       };
+
       render() {
             if (this.state.usuario != '') {
                   if (this.state.usuario[0].tipo == 0) {
@@ -208,19 +208,39 @@ export default class inicio extends React.Component {
                   }
                   if (this.state.usuario[0].tipo == 1) {
                         return (
-                              <ScrollView style={styles.container}>
-                                    <FirstRoute rut={this.state.rut}
+                              <ScrollView refreshControl={
+
+                                    <RefreshControl
+                                          refreshing={this.state.refreshing}
+                                          onRefresh={this._onRefresh} />
+
+                              } style={styles.container}>
+                                    
+                                    <FirstRoute rut={this.state.usuario[0].rut_usuario}
                                           data={this.state.data}
                                           starCount={this.state.starCount}
-                                          mensaje={this.mensaje} />
+                                          mensaje={this.mensaje}
+                                          onNavigate={(titulo, descripcion, costo, lugar, id_clase) => this.props.navigation.navigate("Modificar", {
+                                                titulo: titulo,
+                                                descripcion: descripcion,
+                                                costo: costo,
+                                                lugar: lugar,
+                                                id_clase: id_clase,
+                                              })}
+                                          />
+
+                                    <RefreshControl
+                                          refreshing={this.state.refreshing}
+                                          onRefresh={this._onRefresh}
+                                    />
                               </ScrollView>
                         )
                   }
             } else {
-                  return (<View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#562583'}}>
+                  return (<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#562583' }}>
                         <Image source={imagotipo} style={styles.imagotipo} ></Image>
-                        <Text style={{color: 'white'}}>Cargando Datos...</Text><ActivityIndicator size='large'/>
-                        </View>)
+                        <Text style={{ color: 'white' }}>Cargando Datos...</Text><ActivityIndicator size='large' />
+                  </View>)
             }
             //Ojito Aquí
             return (
@@ -230,16 +250,12 @@ export default class inicio extends React.Component {
 
                               onRefresh={this._onRefresh} />
                   } contentContainerStyle={styles.container}>
+
                         <RefreshControl
                               refreshing={this.state.refreshing}
                               onRefresh={this._onRefresh}
                         />
-                        <TabView
-                              navigationState={this.state}
-                              renderScene={this.renderScene}
-                              onIndexChange={index => this.setState({ index })}
-                              initialLayout={{ width: Dimensions.get('window').width }}
-                        />
+
                   </ScrollView>
             )
 
@@ -247,6 +263,41 @@ export default class inicio extends React.Component {
 }
 
 const FirstRoute = (props) => {
+      _onDelete = (e) => {
+            fetch('http://192.168.1.156/backend/eliminar.php', {
+                  method: 'POST',
+                  headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                        id: e,
+                  })
+            })
+            Alert.alert('Se ha eliminado la clase')
+      }
+      _onRefresh = () => {
+            fetch('http://192.168.1.156/backend/backend.php', {
+                  method: 'POST',
+                  headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                        rut_usuario_inicio: props.rut,
+                  })
+            })
+                  .then((response) => response.json())
+                  .then((res) => {
+                        let data = [];
+                        Object.values(res).forEach(item => {
+                              data = data.concat(item);
+                        });
+                        this.setState({ data: data })
+
+                  })
+
+      }
       if (props.data == '') {
             return (
                   <View style={{ height: height }}>
@@ -254,6 +305,7 @@ const FirstRoute = (props) => {
                   </View>
             )
       } else {
+            console.warn(props.data);
             contents = props.data.map((item, i) => {
                   const { navigation } = props;
                   return (
@@ -298,10 +350,25 @@ const FirstRoute = (props) => {
                                                 <Text>{item.hora_inicio}      {item.hora_fin}</Text>
                                           </View>
                                     </View>
+                                    <View style={estilo_inicio.viewIcons}>
+                                          {/* <View style={estilo_inicio.container}>
+                                                <Title>Costo</Title>
+                                                <Icon name="money" color='#4747d1' size={44} />
+                                                <Text size={30}>${item.costo}</Text>
+                                          </View> */}
+
+                                          <View style={estilo_inicio.container}>
+                                                <Title>Lugar</Title>
+                                                <Icon name="map" color='#4747d1' size={44} />
+                                                <Text>{item.lugar}</Text>
+                                          </View>
+                                    </View>
                               </Card.Content>
                               <Card.Actions style={{ justifyContent: 'center' }}>
 
-                                    <Button mode="contained" key={item.id_clase} onPress={() => props._onDelete(item.id_clase)} style={styles.boton}>Eliminar</Button>
+                                    <Button mode="contained" key={item.id_clase} onPress={() => this._onDelete(item.id_clase)} style={styles.boton}>Eliminar</Button>
+                                    <Button mode="contained" key={i} onPress={() => props.onNavigate(item.titulo, item.descripcion, item.costo, item.lugar, item.id_clase)} style={styles.boton}>Modificar</Button>
+
                                     {/* <Button mode="contained" style={styles.boton}>Mapa</Button> */}
                               </Card.Actions>
                         </Card>
@@ -444,7 +511,7 @@ const styles = StyleSheet.create({
             justifyContent: 'center',
             alignItems: 'center',
             marginBottom: 20,
-          },
+      },
       carta: {
             alignContent: 'center',
             // borderRadius: 25,

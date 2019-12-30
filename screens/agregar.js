@@ -345,15 +345,6 @@ export default class agregar extends React.Component {
             }
       }
       render() {
-            console.log(this.state.rut);
-            console.log(this.state.titulo);
-            console.log(this.state.picker);
-            console.log(this.state.descripcion);
-            console.log(String(this.state.date.getDate()).padStart(2, '0')+'/'+String(this.state.date.getMonth() + 1).padStart(2, '0')+'/'+this.state.date.getFullYear().toString());
-            console.log(this.state.costo);
-            console.log(this.state.lugar);
-            console.log(this.state.cupo);
-
             const { show, date, mode } = this.state;
 
             if (this.state.usuario != '') {
